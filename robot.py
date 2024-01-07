@@ -564,7 +564,7 @@ class MyRobot(wpilib.TimedRobot):
             return
         else:
             self.log("TeleoDrivetrain returned False. Not in a maneuver.")
-            self.teleopElevatorGrabber()
+            #self.teleopElevatorGrabber()
             #self.teleopClaw()
             return
 
