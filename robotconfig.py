@@ -507,7 +507,7 @@ showbot = {
     'DRIVETRAIN': drivetrainConfig,
     'CLAW': clawConfig,
     'GRABBER': grabberConfig, #MUST BE BEFORE ELEVATOR
-    'ELEVATOR': elevatorConfig,
+    #'ELEVATOR': elevatorConfig,
     'AUTON': autonConfig,
     'LOGGING': loggingConfig,
     'DASHBOARD': dashboardConfig
