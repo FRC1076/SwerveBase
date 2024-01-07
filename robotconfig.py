@@ -508,8 +508,11 @@ showbot = {
     'VISION': visionConfig, # Must be BEFORE drivetrain
     'DRIVETRAIN': drivetrainConfig,
     #'CLAW': clawConfig,
-    'GRABBER': grabberConfig, #MUST BE BEFORE ELEVATOR
+    #'GRABBER': grabberConfig, #MUST BE BEFORE ELEVATOR
     #'ELEVATOR': elevatorConfig,
+    #'CLAW': clawConfig,
+    #'GRABBER': grabberConfig, #MUST BE BEFORE ELEVATOR
+    'ELEVATOR': elevatorConfig,
     'AUTON': autonConfig,
     'LOGGING': loggingConfig,
     'DASHBOARD': dashboardConfig
