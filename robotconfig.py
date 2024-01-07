@@ -152,67 +152,6 @@ visionConfig = {
     'UPDATE_POSE': False, # True if should correct position with Limelight information. Otherwise informational.
 }
 
-elevatorConfig = {
-    'RIGHT_ID': 6,
-    'LEFT_ID': 5,
-    'SOLENOID_FORWARD_ID': 15,
-    'SOLENOID_REVERSE_ID': 14,
-    'ELEVATOR_KP': 0.6, # 0.2, #0.8, #0.3, #0.48
-    'ELEVATOR_KI': 0, #0.15, # 1.0, #0.0008, #0.0008, #0.0008
-    'ELEVATOR_KD': 0.05, #0.01, # 0, #0.25, #0.2, #0.03
-    'LOWER_SAFETY': 1,
-    'UPPER_SAFETY': 33,
-    'LEFT_LIMIT_SWITCH': 3, # Failsafe, hopefully one of them triggers
-    'RIGHT_LIMIT_SWITCH': 4, # Failsafe, hopefully one of them triggers
-    'CONE_ELEVATOR_HUMAN_POSITION': 22, # Assumes Elevator Down
-    'CONE_ELEVATOR_UPPER_SCORING_HEIGHT': 29, #30.25, # Assumes Elevator Down
-    'CONE_ELEVATOR_LOWER_SCORING_HEIGHT': 18.50, # Assumes Elevator Down
-    'CONE_ELEVATOR_RETRACTED_HEIGHT': 7,
-    'CUBE_ELEVATOR_HUMAN_POSITION': 21.0, # Assumes Elevator Down
-    'CUBE_ELEVATOR_UPPER_SCORING_HEIGHT': 25.5, # Assumes Elevator Down
-    'CUBE_ELEVATOR_LOWER_SCORING_HEIGHT': 15.25, # Assumes Elevator Down
-    'CUBE_ELEVATOR_RETRACTED_HEIGHT': 7,
-}
-
-grabberConfig = {
-    'ROTATE_MOTOR_ID': 7,
-    'GRABBER_ROTATE_SPEED': 0.125,
-    'GRABBER_KP': 0.1, # 0.1, #0.2, #0.12,3
-    'GRABBER_KI': 0, # 1.0, #0.0008, #0.0008,
-    'GRABBER_KD': 0, # 0.001, #0.002,
-    'MAX_POSITION': 2.5, # Roughly 0 - 5 scale, with 0 at top
-    'MIN_POSITION': 0.25, # Roughly 0 - 5 scale, with 0 at top
-    'CONE_GRABBER_HUMAN_POSITION': 1.3, # Assumes Elevator Down
-    'CONE_GRABBER_UPPER_SCORING_HEIGHT': 0.25, #Asssumes Elevator Down
-    'CONE_GRABBER_LOWER_SCORING_HEIGHT': 0.5, # Assumes Elevator Down
-    'CONE_GRABBER_RETRACTED_HEIGHT': 0.95,
-    'CUBE_GRABBER_HUMAN_POSITION': 1.3, # Assumes Elevator Down
-    'CUBE_GRABBER_UPPER_SCORING_HEIGHT': 0.8, #Asssumes Elevator Down
-    'CUBE_GRABBER_LOWER_SCORING_HEIGHT': 0.8, # Assumes Elevator Down
-    'CUBE_GRABBER_RETRACTED_HEIGHT': 1.3,}
-
-"""
-clawConfig = {
-    'MOTOR_ID': 8,
-    'CONE_DEFAULT_RELEASE_SPEED': 0.125, #0.125, # Go slow on release, so piece drops straight down
-    'CONE_UPPER_SCORING_HEIGHT_RELEASE_SPEED': 0.16,
-    'CONE_LOWER_SCORING_HEIGHT_RELEASE_SPEED': 0.125,
-    'CUBE_DEFAULT_RELEASE_SPEED': 0.125, #0.125, # Go slow on release, so piece drops straight down
-    'CUBE_UPPER_SCORING_HEIGHT_RELEASE_SPEED': 0.18,
-    'CUBE_LOWER_SCORING_HEIGHT_RELEASE_SPEED': 0.125,
-    'RELEASE_CHANGE': 12, # Encoder change before we assume element is expelled
-    'INTAKE_SPEED': 0.5, # Go fast on intake
-    'INTAKE_CHANGE': 0.25 # Encoder change before we assume element is taken in
-}
-"""
-
-cliffDetectorConfig = {
-    'LEFT_CLIFF_DETECTOR_PINGID': 0,
-    'LEFT_CLIFF_DETECTOR_ECHOID': 1,
-    'RIGHT_CLIFF_DETECTOR_PINGID': 2,
-    'RIGHT_CLIFF_DETECTOR_ECHOID': 3,
-    'CLIFF_TOLERANCE': 2, # Centimeters?
-}
 
 autonConfig = {
     'SCORE_EXISTING': True,
@@ -507,12 +446,6 @@ showbot = {
     'SWERVOMETER': swervometerConfig, # Must be BEFORE drivetrain
     'VISION': visionConfig, # Must be BEFORE drivetrain
     'DRIVETRAIN': drivetrainConfig,
-    #'CLAW': clawConfig,
-    #'GRABBER': grabberConfig, #MUST BE BEFORE ELEVATOR
-    #'ELEVATOR': elevatorConfig,
-    #'CLAW': clawConfig,
-    #'GRABBER': grabberConfig, #MUST BE BEFORE ELEVATOR
-    'ELEVATOR': elevatorConfig,
     'AUTON': autonConfig,
     'LOGGING': loggingConfig,
     'DASHBOARD': dashboardConfig
