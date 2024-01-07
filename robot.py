@@ -836,7 +836,9 @@ class MyRobot(wpilib.TimedRobot):
 
         # Reset the task counter
         self.autonTaskCounter = 0
-
+    def autonomousPeriodic(self):
+         return False
+    """
     def autonomousPeriodic(self):
         if not self.auton:
             return
@@ -870,16 +872,7 @@ class MyRobot(wpilib.TimedRobot):
 
         self.log("Autonomous Periodic: Past Grabber reset and Elevator reset ")
         self.log("Current Task Counter: ", self.autonTaskCounter, "Current Task: ", autonTask, "Current Task List: ", self.autonTaskList)
-
-        if (autonTask[0] == 'TIMER'):
-            self.log("RUNNING Auton Task TIMER, timer: ", self.autonTimer.get())
-            if self.autonTimer.get() > autonTask[1]:
-                self.log("ENDING Auton Task: TIMER: ", self.autonTimer.get())
-                self.autonTaskCounter += 1
-            self.grabber.update()
-            self.elevator.update()
-
-        """
+        
         elif (autonTask[0] == 'CLAW_INTAKE_AND_STOP'):
             self.log("RUNNING Auton Task CLAW_INTAKE_AND_STOP, autonTaskCounter: ", self.autonTaskCounter)
             if self.claw.runAndStop(-1):
@@ -901,7 +894,15 @@ class MyRobot(wpilib.TimedRobot):
                 self.autonTaskCounter += 1
             self.grabber.update()
             self.elevator.update()
-        """
+        
+        if (autonTask[0] == 'TIMER'):
+            self.log("RUNNING Auton Task TIMER, timer: ", self.autonTimer.get())
+            if self.autonTimer.get() > autonTask[1]:
+                self.log("ENDING Auton Task: TIMER: ", self.autonTimer.get())
+                self.autonTaskCounter += 1
+            self.grabber.update()
+            self.elevator.update()
+
         elif (autonTask[0] == 'RAISE_GRABBER'):
             self.log("RUNNING Auton Task RAISE_GRABBER, autonTaskCounter: ", self.autonTaskCounter)
             if self.grabber.raise_motor(self.grabber.getRotateSpeed()):
@@ -1064,7 +1065,7 @@ class MyRobot(wpilib.TimedRobot):
 
         self.log("WHICH TASK: ", maneuverTask[0])
         
-        """
+        
         if (maneuverTask[0] == 'CLAW_OFF'):
             self.claw.off()
             self.maneuverTaskCounter += 1
@@ -1083,7 +1084,7 @@ class MyRobot(wpilib.TimedRobot):
             self.log("RUNNING AND ENDING Maneuver: Claw Release")
             self.elevator.update()
             self.grabber.update()
-        """
+        
         
         elif (maneuverTask[0] == 'RAISE_GRABBER'):
             if self.grabber.raise_motor(self.grabber.getRotateSpeed()):
@@ -1233,7 +1234,7 @@ class MyRobot(wpilib.TimedRobot):
             self.log("RUNNING Maneuver: ERROR: Unknown Task", self.maneuverTaskCounter, maneuverTask[0])
             self.maneuverTaskCounter += 1   
         return
-
+    """
     def deadzoneCorrection(self, val, deadzone):
         """
         Given the deadzone value x, the deadzone both eliminates all
