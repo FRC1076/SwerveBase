@@ -191,6 +191,7 @@ grabberConfig = {
     'CUBE_GRABBER_LOWER_SCORING_HEIGHT': 0.8, # Assumes Elevator Down
     'CUBE_GRABBER_RETRACTED_HEIGHT': 1.3,}
 
+"""
 clawConfig = {
     'MOTOR_ID': 8,
     'CONE_DEFAULT_RELEASE_SPEED': 0.125, #0.125, # Go slow on release, so piece drops straight down
@@ -203,6 +204,7 @@ clawConfig = {
     'INTAKE_SPEED': 0.5, # Go fast on intake
     'INTAKE_CHANGE': 0.25 # Encoder change before we assume element is taken in
 }
+"""
 
 cliffDetectorConfig = {
     'LEFT_CLIFF_DETECTOR_PINGID': 0,
@@ -505,7 +507,7 @@ showbot = {
     'SWERVOMETER': swervometerConfig, # Must be BEFORE drivetrain
     'VISION': visionConfig, # Must be BEFORE drivetrain
     'DRIVETRAIN': drivetrainConfig,
-    'CLAW': clawConfig,
+    #'CLAW': clawConfig,
     'GRABBER': grabberConfig, #MUST BE BEFORE ELEVATOR
     #'ELEVATOR': elevatorConfig,
     'AUTON': autonConfig,

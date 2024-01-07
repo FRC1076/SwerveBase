@@ -32,7 +32,7 @@ from cliffdetector import CliffDetector
 from elevator import Elevator
 from grabber import Grabber
 from vision import Vision
-from claw import Claw
+#from claw import Claw
 from logger import Logger
 from dashboard import Dashboard
 
@@ -62,7 +62,7 @@ class MyRobot(wpilib.TimedRobot):
         self.vision = None
         self.elevator = None
         self.grabber = None
-        self.claw = None
+        #self.claw = None
 
         # Even if no drivetrain, defaults to drive phase
         self.phase = "DRIVE_PHASE"
@@ -95,8 +95,8 @@ class MyRobot(wpilib.TimedRobot):
                 self.grabber = self.initGrabber(config)
             if key == 'DRIVETRAIN':
                 self.drivetrain = self.initDrivetrain(config)
-            if key == 'CLAW':
-                self.claw = self.initClaw(config)
+            #if key == 'CLAW':
+                #self.claw = self.initClaw(config)
 
             #if key == 'CLIFFDETECTOR':
             #    self.cliffDetector = self.initCliffDetector(config)
@@ -114,8 +114,8 @@ class MyRobot(wpilib.TimedRobot):
         if self.drivetrain:
             self.drivetrain.reset()
 
-        if self.claw:
-            self.claw.off()
+        #if self.claw:
+            #self.claw.off()
 
         # Reset task counter.
         self.autonTaskCounter = 0
@@ -282,8 +282,8 @@ class MyRobot(wpilib.TimedRobot):
         self.cube_grabber_retracted_height = config['CUBE_GRABBER_RETRACTED_HEIGHT']
         return Grabber(config['ROTATE_MOTOR_ID'], config['GRABBER_ROTATE_SPEED'], config['GRABBER_KP'], config['GRABBER_KI'], config['GRABBER_KD'], config['MAX_POSITION'], config['MIN_POSITION'])
 
-    def initClaw(self, config):
-        return Claw(config['MOTOR_ID'], config['CONE_DEFAULT_RELEASE_SPEED'], config['CONE_UPPER_SCORING_HEIGHT_RELEASE_SPEED'], config['CONE_LOWER_SCORING_HEIGHT_RELEASE_SPEED'], config['CUBE_DEFAULT_RELEASE_SPEED'], config['CUBE_UPPER_SCORING_HEIGHT_RELEASE_SPEED'], config['CUBE_LOWER_SCORING_HEIGHT_RELEASE_SPEED'], config['RELEASE_CHANGE'], config['INTAKE_SPEED'], config['INTAKE_CHANGE'])
+    #def initClaw(self, config):
+        #return Claw(config['MOTOR_ID'], config['CONE_DEFAULT_RELEASE_SPEED'], config['CONE_UPPER_SCORING_HEIGHT_RELEASE_SPEED'], config['CONE_LOWER_SCORING_HEIGHT_RELEASE_SPEED'], config['CUBE_DEFAULT_RELEASE_SPEED'], config['CUBE_UPPER_SCORING_HEIGHT_RELEASE_SPEED'], config['CUBE_LOWER_SCORING_HEIGHT_RELEASE_SPEED'], config['RELEASE_CHANGE'], config['INTAKE_SPEED'], config['INTAKE_CHANGE'])
     
     def initDrivetrain(self, config):
         self.log("initDrivetrain ran")
@@ -557,15 +557,16 @@ class MyRobot(wpilib.TimedRobot):
             #self.grabber.update()
             #return
         #self.log("TeleopPeriodic: Elevator reset test complete")
-        self.teleopDrivetrain()
-        #if self.teleopDrivetrain():
-            #self.log("TeleoDrivetrain returned true. In a maneuver.")
-            #return
-        #else:
-            #self.log("TeleoDrivetrain returned False. Not in a maneuver.")
-            #self.teleopElevatorGrabber()
+
+        
+        if self.teleopDrivetrain():
+            self.log("TeleoDrivetrain returned true. In a maneuver.")
+            return
+        else:
+            self.log("TeleoDrivetrain returned False. Not in a maneuver.")
+            self.teleopElevatorGrabber()
             #self.teleopClaw()
-            #return
+            return
 
     def teleopDrivetrain(self):
         if (not self.drivetrain):
@@ -754,7 +755,7 @@ class MyRobot(wpilib.TimedRobot):
                 self.elevator.moveToPos(self.elevator.getTargetPosition()) # Elevator stay in place
             self.log("ElevatorGrabber: Move grabber, maintain elevator.")
         elif operator.getAButton() and operator.getLeftTriggerAxis() > 0.7: #Lowest Position - Cube
-            self.claw.setCubeSpeedDefault()
+            #self.claw.setCubeSpeedDefault()
             self.grabber.goToPosition(self.cube_grabber_retracted_height)
             self.elevator.moveToPos(self.cube_elevator_retracted_height)
             self.log("ElevatorGrabber: Cube: A Button")
@@ -806,6 +807,7 @@ class MyRobot(wpilib.TimedRobot):
         return
     """
 
+    """
     def teleopClaw(self):
         operator = self.operator.xboxController
         if (operator.getRightBumper()):
@@ -817,6 +819,7 @@ class MyRobot(wpilib.TimedRobot):
             self.claw.release()
         else:
             self.claw.off()
+    """
         
     def autonomousInit(self):
         if not self.auton:
@@ -884,6 +887,7 @@ class MyRobot(wpilib.TimedRobot):
                 self.autonTaskCounter += 1
             self.grabber.update()
             #self.elevator.update()
+
         elif (autonTask[0] == 'CLAW_INTAKE_AND_STOP'):
             self.log("RUNNING Auton Task CLAW_INTAKE_AND_STOP, autonTaskCounter: ", self.autonTaskCounter)
             if self.claw.runAndStop(-1):
@@ -905,6 +909,15 @@ class MyRobot(wpilib.TimedRobot):
                 self.autonTaskCounter += 1
             self.grabber.update()
             #self.elevator.update()
+        
+        if (autonTask[0] == 'TIMER'):
+            self.log("RUNNING Auton Task TIMER, timer: ", self.autonTimer.get())
+            if self.autonTimer.get() > autonTask[1]:
+                self.log("ENDING Auton Task: TIMER: ", self.autonTimer.get())
+                self.autonTaskCounter += 1
+            self.grabber.update()
+            self.elevator.update()
+
         elif (autonTask[0] == 'RAISE_GRABBER'):
             self.log("RUNNING Auton Task RAISE_GRABBER, autonTaskCounter: ", self.autonTaskCounter)
             if self.grabber.raise_motor(self.grabber.getRotateSpeed()):
@@ -1069,7 +1082,8 @@ class MyRobot(wpilib.TimedRobot):
         maneuverTask = self.maneuverTaskList[self.maneuverTaskCounter]
 
         self.log("WHICH TASK: ", maneuverTask[0])
-
+        
+        
         if (maneuverTask[0] == 'CLAW_OFF'):
             self.claw.off()
             self.maneuverTaskCounter += 1
@@ -1088,6 +1102,8 @@ class MyRobot(wpilib.TimedRobot):
             self.log("RUNNING AND ENDING Maneuver: Claw Release")
             self.elevator.update()
             self.grabber.update()
+        
+        
         elif (maneuverTask[0] == 'RAISE_GRABBER'):
             if self.grabber.raise_motor(self.grabber.getRotateSpeed()):
                 self.log("ENDING Maneuver", maneuverTask[0])            
