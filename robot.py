@@ -19,7 +19,7 @@ from swervedrive import SwerveDrive
 from swervemodule import SwerveModule
 from swervemodule import ModuleConfig
 
-from swervedrive import BalanceConfig
+# from swervedrive import BalanceConfig
 from swervedrive import TargetConfig
 from swervedrive import BearingConfig
 from swervedrive import VisionDriveConfig
@@ -243,7 +243,7 @@ class MyRobot(wpilib.TimedRobot):
         self.log("initDrivetrain ran")
         self.drive_type = config['DRIVETYPE']  # side effect!
 
-        balance_cfg = BalanceConfig(sd_prefix='Balance_Module', balance_pitch_kP=config['BALANCE_PITCH_KP'], balance_pitch_kI=config['BALANCE_PITCH_KI'], balance_pitch_kD=config['BALANCE_PITCH_KD'], balance_yaw_kP=config['BALANCE_YAW_KP'], balance_yaw_kI=config['BALANCE_YAW_KI'], balance_yaw_kD=config['BALANCE_YAW_KD'])
+        # balance_cfg = BalanceConfig(sd_prefix='Balance_Module', balance_pitch_kP=config['BALANCE_PITCH_KP'], balance_pitch_kI=config['BALANCE_PITCH_KI'], balance_pitch_kD=config['BALANCE_PITCH_KD'], balance_yaw_kP=config['BALANCE_YAW_KP'], balance_yaw_kI=config['BALANCE_YAW_KI'], balance_yaw_kD=config['BALANCE_YAW_KD'])
         target_cfg = TargetConfig(sd_prefix='Target_Module', target_kP=config['TARGET_KP'], target_kI=config['TARGET_KI'], target_kD=config['TARGET_KD'])
         bearing_cfg = BearingConfig(sd_prefix='Bearing_Module', bearing_kP=config['BEARING_KP'], bearing_kI=config['BEARING_KI'], bearing_kD=config['BEARING_KD'])
         vision_cfg = VisionDriveConfig(sd_prefix='Vision_Module',
@@ -306,170 +306,170 @@ class MyRobot(wpilib.TimedRobot):
 
         return swerve
 
-    def initAuton(self, config):
-        self.autonScoreExisting = config['SCORE_EXISTING']
-        self.autonBalanceRobot = config['BALANCE_BOT']
-        self.autonDoCommunity = config['DO_COMMUNITY']
+    # def initAuton(self, config):
+    #     self.autonScoreExisting = config['SCORE_EXISTING']
+    #     # self.autonBalanceRobot = config['BALANCE_BOT']
+    #     self.autonDoCommunity = config['DO_COMMUNITY']
 
-        self.dashboard.putNumber(DASH_PREFIX, 'Auton Score Existing Element', self.autonScoreExisting)
-        self.dashboard.putNumber(DASH_PREFIX, 'Auton Balance Robot', self.autonBalanceRobot)
+    #     self.dashboard.putNumber(DASH_PREFIX, 'Auton Score Existing Element', self.autonScoreExisting)
+    #     # self.dashboard.putNumber(DASH_PREFIX, 'Auton Balance Robot', self.autonBalanceRobot)
 
-        # Reset task counter.
-        self.autonTaskCounter = 0
+    #     # Reset task counter.
+    #     self.autonTaskCounter = 0
 
-        # Set Open Loop Ramp Rate for Auton
-        self.autonOpenLoopRampRate = config['AUTON_OPEN_LOOP_RAMP_RATE']
-        self.autonClosedLoopRampRate = config['AUTON_CLOSED_LOOP_RAMP_RATE']
+    #     # Set Open Loop Ramp Rate for Auton
+    #     self.autonOpenLoopRampRate = config['AUTON_OPEN_LOOP_RAMP_RATE']
+    #     self.autonClosedLoopRampRate = config['AUTON_CLOSED_LOOP_RAMP_RATE']
 
-        # Figure out task list
-        if (self.team_is_red
-            and self.fieldStartPosition == 'A'
-            and self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_RED_A_TF']
-        elif (self.team_is_red
-            and self.fieldStartPosition == 'A'
-            and self.autonScoreExisting
-            and self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_RED_A_TT']
-        elif (self.team_is_red
-            and self.fieldStartPosition == 'A'
-            and not self.autonScoreExisting
-            and self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_RED_A_FT']
-        elif (self.team_is_red
-            and self.fieldStartPosition == 'A'
-            and not self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_RED_A_FF']
-        elif (self.team_is_red
-            and self.fieldStartPosition == 'B'
-            and self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_RED_B_TF']     
-        elif (self.team_is_red
-            and self.fieldStartPosition == 'B'
-            and self.autonScoreExisting
-            and self.autonBalanceRobot):
-                if self.autonDoCommunity:
-                    self.autonTaskList = config['TASK_RED_B_TTT']
-                else:
-                    self.autonTaskList = config['TASK_RED_B_TTF']     
-        elif (self.team_is_red
-            and self.fieldStartPosition == 'B'
-            and not self.autonScoreExisting
-            and self.autonBalanceRobot):
-                if self.autonDoCommunity:
-                    self.autonTaskList = config['TASK_RED_B_FTT']
-                else:
-                    self.autonTaskList = config['TASK_RED_B_FTF']     
-        elif (self.team_is_red
-            and self.fieldStartPosition == 'B'
-            and not self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_RED_B_FF']     
-        elif (self.team_is_red
-            and self.fieldStartPosition == 'C'
-            and self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_RED_C_TF']
-        elif (self.team_is_red
-            and self.fieldStartPosition == 'C'
-            and self.autonScoreExisting
-            and self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_RED_C_TT']
-        elif (self.team_is_red
-            and self.fieldStartPosition == 'C'
-            and not self.autonScoreExisting
-            and self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_RED_C_FT']
-        elif (self.team_is_red
-            and self.fieldStartPosition == 'C'
-            and not self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_RED_C_FF']
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'A'
-            and self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_BLU_A_TF']     
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'A'
-            and self.autonScoreExisting
-            and self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_BLU_A_TT']     
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'A'
-            and not self.autonScoreExisting
-            and self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_BLU_A_FT']     
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'A'
-            and not self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_BLU_A_FF']     
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'B'
-            and self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_BLU_B_TF']
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'B'
-            and self.autonScoreExisting
-            and self.autonBalanceRobot):
-                if self.autonDoCommunity:
-                    self.autonTaskList = config['TASK_BLU_B_TTT']
-                else:
-                    self.autonTaskList = config['TASK_BLU_B_TTF']     
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'B'
-            and not self.autonScoreExisting
-            and self.autonBalanceRobot):
-                if self.autonDoCommunity:
-                    self.autonTaskList = config['TASK_BLU_B_FTT']
-                else:
-                    self.autonTaskList = config['TASK_BLU_B_FTF']     
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'B'
-            and not self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_BLU_B_FF']
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'C'
-            and self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_BLU_C_TF']
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'C'
-            and self.autonScoreExisting
-            and self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_BLU_C_TT']
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'C'
-            and self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_BLU_C_TF']
-        elif (not self.team_is_red
-            and self.fieldStartPosition == 'C'
-            and not self.autonScoreExisting
-            and not self.autonBalanceRobot):
-                self.autonTaskList = config['TASK_BLU_C_FF']
-        else: # No matching task list
-            self.autonTaskCounter = -1
-            self.autonTaskList = []
+    #     # Figure out task list
+    #     if (self.team_is_red
+    #         and self.fieldStartPosition == 'A'
+    #         and self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_RED_A_TF']
+    #     elif (self.team_is_red
+    #         and self.fieldStartPosition == 'A'
+    #         and self.autonScoreExisting
+    #         and self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_RED_A_TT']
+    #     elif (self.team_is_red
+    #         and self.fieldStartPosition == 'A'
+    #         and not self.autonScoreExisting
+    #         and self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_RED_A_FT']
+    #     elif (self.team_is_red
+    #         and self.fieldStartPosition == 'A'
+    #         and not self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_RED_A_FF']
+    #     elif (self.team_is_red
+    #         and self.fieldStartPosition == 'B'
+    #         and self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_RED_B_TF']     
+    #     elif (self.team_is_red
+    #         and self.fieldStartPosition == 'B'
+    #         and self.autonScoreExisting
+    #         and self.autonBalanceRobot):
+    #             if self.autonDoCommunity:
+    #                 self.autonTaskList = config['TASK_RED_B_TTT']
+    #             else:
+    #                 self.autonTaskList = config['TASK_RED_B_TTF']     
+    #     elif (self.team_is_red
+    #         and self.fieldStartPosition == 'B'
+    #         and not self.autonScoreExisting
+    #         and self.autonBalanceRobot):
+    #             if self.autonDoCommunity:
+    #                 self.autonTaskList = config['TASK_RED_B_FTT']
+    #             else:
+    #                 self.autonTaskList = config['TASK_RED_B_FTF']     
+    #     elif (self.team_is_red
+    #         and self.fieldStartPosition == 'B'
+    #         and not self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_RED_B_FF']     
+    #     elif (self.team_is_red
+    #         and self.fieldStartPosition == 'C'
+    #         and self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_RED_C_TF']
+    #     elif (self.team_is_red
+    #         and self.fieldStartPosition == 'C'
+    #         and self.autonScoreExisting
+    #         and self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_RED_C_TT']
+    #     elif (self.team_is_red
+    #         and self.fieldStartPosition == 'C'
+    #         and not self.autonScoreExisting
+    #         and self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_RED_C_FT']
+    #     elif (self.team_is_red
+    #         and self.fieldStartPosition == 'C'
+    #         and not self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_RED_C_FF']
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'A'
+    #         and self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_BLU_A_TF']     
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'A'
+    #         and self.autonScoreExisting
+    #         and self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_BLU_A_TT']     
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'A'
+    #         and not self.autonScoreExisting
+    #         and self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_BLU_A_FT']     
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'A'
+    #         and not self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_BLU_A_FF']     
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'B'
+    #         and self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_BLU_B_TF']
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'B'
+    #         and self.autonScoreExisting
+    #         and self.autonBalanceRobot):
+    #             if self.autonDoCommunity:
+    #                 self.autonTaskList = config['TASK_BLU_B_TTT']
+    #             else:
+    #                 self.autonTaskList = config['TASK_BLU_B_TTF']     
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'B'
+    #         and not self.autonScoreExisting
+    #         and self.autonBalanceRobot):
+    #             if self.autonDoCommunity:
+    #                 self.autonTaskList = config['TASK_BLU_B_FTT']
+    #             else:
+    #                 self.autonTaskList = config['TASK_BLU_B_FTF']     
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'B'
+    #         and not self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_BLU_B_FF']
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'C'
+    #         and self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_BLU_C_TF']
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'C'
+    #         and self.autonScoreExisting
+    #         and self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_BLU_C_TT']
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'C'
+    #         and self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_BLU_C_TF']
+    #     elif (not self.team_is_red
+    #         and self.fieldStartPosition == 'C'
+    #         and not self.autonScoreExisting
+    #         and not self.autonBalanceRobot):
+    #             self.autonTaskList = config['TASK_BLU_C_FF']
+    #     else: # No matching task list
+    #         self.autonTaskCounter = -1
+    #         self.autonTaskList = []
 
-        self.log("Init Auton: Task List: ", self.autonTaskList)
-        return True
+    #     self.log("Init Auton: Task List: ", self.autonTaskList)
+    #     return True
 
-    def initCliffDetector(self, config):
-        self.log(config)
-        cliffDetector = CliffDetector(
-            config['LEFT_CLIFF_DETECTOR_PINGID'], 
-            config['LEFT_CLIFF_DETECTOR_ECHOID'], 
-            config['RIGHT_CLIFF_DETECTOR_PINGID'],
-            config['RIGHT_CLIFF_DETECTOR_ECHOID'],
-            config['CLIFF_TOLERANCE'])
-        return cliffDetector
+    # def initCliffDetector(self, config):
+    #     self.log(config)
+    #     cliffDetector = CliffDetector(
+    #         config['LEFT_CLIFF_DETECTOR_PINGID'], 
+    #         config['LEFT_CLIFF_DETECTOR_ECHOID'], 
+    #         config['RIGHT_CLIFF_DETECTOR_PINGID'],
+    #         config['RIGHT_CLIFF_DETECTOR_ECHOID'],
+    #         config['CLIFF_TOLERANCE'])
+    #     return cliffDetector
 
     def robotPeriodic(self):
         #if self.cliffDetector:
