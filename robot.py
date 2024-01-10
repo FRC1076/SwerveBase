@@ -28,8 +28,8 @@ from swervometer import FieldConfig
 from swervometer import RobotPropertyConfig
 from swervometer import Swervometer
 
-from cliffdetector import CliffDetector
-from elevator import Elevator
+#from cliffdetector import CliffDetector
+#from elevator import Elevator
 #from grabber import Grabber
 from vision import Vision
 #from claw import Claw
@@ -1110,6 +1110,7 @@ class MyRobot(wpilib.TimedRobot):
         values between -x and x, and scales the remaining values from
         -1 to 1, to (-1 + x) to (1 - x)
         """
+        print("hola mi amogis")
         if abs(val) < deadzone:
             return 0
         elif val < 0:

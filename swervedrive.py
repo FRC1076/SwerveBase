@@ -11,9 +11,11 @@ from networktables import NetworkTables
 from networktables.util import ntproperty
 from collections import namedtuple
 from wpimath.controller import PIDController
+import wpimath.geometry
 from swervometer import Swervometer
 from logger import Logger
 from robotconfig import MODULE_NAMES
+import wpilib
 
 DASH_PREFIX = MODULE_NAMES.SWERVEDRIVE
 
@@ -172,6 +174,10 @@ class SwerveDrive:
         self.inAuton = True
         self.autonSteerStraight = _auton_steer_straight
         self.teleopSteerStraight = _teleop_steer_straight
+
+        x, y, r = self.swervometer.getCOF()
+        self.field = wpilib.Field2d()
+        self.field.setRobotPose(wpimath.geometry.Pose2d(x, y, wpimath.geometry.Rotation2d(r)))
 
     def setInAuton(self, state):
         self.inAuton = state
@@ -1063,6 +1069,10 @@ class SwerveDrive:
         for key in self._requested_angles:
             self.dashboard.putNumber(DASH_PREFIX, '/%s_angle' % key, self._requested_angles[key])
             self.dashboard.putNumber(DASH_PREFIX, '/%s_speed' % key, self._requested_speeds[key])
+
+        x, y, r = self.swervometer.getCOF()
+        self.field.setRobotPose(wpimath.geometry.Pose2d(x/10, y/10, wpimath.geometry.Rotation2d(r)))
+        self.dashboard.putField(DASH_PREFIX, '/Field', self.field)
                 
     def log(self, *dataToLog):
         self.logger.log(DASH_PREFIX, dataToLog)   

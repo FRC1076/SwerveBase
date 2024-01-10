@@ -1,6 +1,7 @@
 
 from networktables import NetworkTables
 from robotconfig import dashboardConfig, MODULE_NAMES
+from wpilib import SmartDashboard
 
 class Dashboard:
 
@@ -28,6 +29,11 @@ class Dashboard:
     def putString(self, moduleName, key, value):
         if dashboardConfig[moduleName]:
             self.dashboard.putString(moduleName + '/' + key, value)
+    
+    def putField(self, moduleName, key, value):
+        #if dashboardConfig[moduleName]:
+            #self.dashboard.putRaw(moduleName + '/' + key, value)
+        SmartDashboard.putData("Field", value)
 
     def getNumber(self, moduleName, key, defaultValue = -1):
         return self.dashboard.getNumber(moduleName + '/' + key, defaultValue)
