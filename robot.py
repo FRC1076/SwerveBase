@@ -38,6 +38,8 @@ from dashboard import Dashboard
 
 from tester import Tester
 
+from autonomous import Autonomous
+
 # Drive Types
 ARCADE = 1
 TANK = 2
@@ -307,6 +309,11 @@ class MyRobot(wpilib.TimedRobot):
         return swerve
 
     def initAuton(self, config):
+        self.autonOpenLoopRampRate = config['AUTON_OPEN_LOOP_RAMP_RATE']
+        self.autonClosedLoopRampRate = config['AUTON_CLOSED_LOOP_RAMP_RATE']
+        auton = Autonomous(config, self.team_is_red, self.fieldStartPosition, self.drivetrain)
+        return auton
+        """
         self.autonScoreExisting = config['SCORE_EXISTING']
         self.autonBalanceRobot = config['BALANCE_BOT']
         self.autonDoCommunity = config['DO_COMMUNITY']
@@ -460,6 +467,7 @@ class MyRobot(wpilib.TimedRobot):
 
         self.log("Init Auton: Task List: ", self.autonTaskList)
         return True
+        """
 
     # def initCliffDetector(self, config):
     #     self.log(config)
@@ -651,6 +659,7 @@ class MyRobot(wpilib.TimedRobot):
                     self.drivetrain.execute('center')
             # If no joysticks are dictating movement, but we want to lock the wheels.
             elif self.drivetrain.getWheelLock():
+                print("wheel locking")
                 self.drivetrain.move(0, 0, 0, self.drivetrain.getBearing())
                 self.drivetrain.execute('center')
             # Otherwise, make sure we are explicitly doing nothing, so bot does not drift.
@@ -693,7 +702,9 @@ class MyRobot(wpilib.TimedRobot):
 
         # Reset the task counter
         self.autonTaskCounter = 0
+        
     def autonomousPeriodic(self):
+         self.auton.executeAuton()
          return False
     """
     def autonomousPeriodic(self):

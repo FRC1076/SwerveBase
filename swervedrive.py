@@ -177,7 +177,7 @@ class SwerveDrive:
 
         x, y, r = self.swervometer.getCOF()
         self.field = wpilib.Field2d()
-        self.field.setRobotPose(wpimath.geometry.Pose2d(x, y, wpimath.geometry.Rotation2d(r)))
+        self.field.setRobotPose(wpimath.geometry.Pose2d((x + 248.625) * 0.0254, (y + 115.25) * 0.0254, wpimath.geometry.Rotation2d(self.getGyroAngle() * math.pi / 180)))
 
     def setInAuton(self, state):
         self.inAuton = state
@@ -1071,7 +1071,7 @@ class SwerveDrive:
             self.dashboard.putNumber(DASH_PREFIX, '/%s_speed' % key, self._requested_speeds[key])
 
         x, y, r = self.swervometer.getCOF()
-        self.field.setRobotPose(wpimath.geometry.Pose2d(x/10, y/10, wpimath.geometry.Rotation2d(r)))
+        self.field.setRobotPose(wpimath.geometry.Pose2d((x + 248.625) * 0.0254, (y + 115.25) * 0.0254, wpimath.geometry.Rotation2d(self.getGyroAngle() * math.pi / 180))) #convert our coordinate system to theirs
         self.dashboard.putField(DASH_PREFIX, '/Field', self.field)
                 
     def log(self, *dataToLog):
