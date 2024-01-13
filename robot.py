@@ -295,11 +295,11 @@ class MyRobot(wpilib.TimedRobot):
         self.teleopSteerStraight = config['TELEOP_STEER_STRAIGHT']
 
         # Define maneuver task lists
-        self.lowConeScoreTaskList = config['LOW_CONE_SCORE']
-        self.highConeScoreTaskList = config['HIGH_CONE_SCORE']
-        self.humanStationTaskList = config['HUMAN_STATION_PICKUP']
-        self.rotateClockwiseTaskList = config['ROTATE_CLOCKWISE']
-        self.rotateCounterclockwiseTaskList = config['ROTATE_COUNTERCLOCKWISE']
+        # self.lowConeScoreTaskList = config['LOW_CONE_SCORE']
+        # self.highConeScoreTaskList = config['HIGH_CONE_SCORE']
+        # self.humanStationTaskList = config['HUMAN_STATION_PICKUP']
+        # self.rotateClockwiseTaskList = config['ROTATE_CLOCKWISE']
+        # self.rotateCounterclockwiseTaskList = config['ROTATE_COUNTERCLOCKWISE']
 
         #gyro = AHRS.create_spi()
         gyro = AHRS.create_spi(wpilib._wpilib.SPI.Port.kMXP, 500000, 50) # https://www.chiefdelphi.com/t/navx2-disconnecting-reconnecting-intermittently-not-browning-out/425487/36
