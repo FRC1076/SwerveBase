@@ -1,6 +1,6 @@
 from navx import AHRS
 import math
-from util import clamp
+#from util import clamp
 
 #from magicbot import magiccomponent
 import swervemodule
@@ -178,6 +178,13 @@ class SwerveDrive:
         x, y, r = self.swervometer.getCOF()
         self.field = wpilib.Field2d()
         self.field.setRobotPose(wpimath.geometry.Pose2d((x + 248.625) * 0.0254, (y + 115.25) * 0.0254, wpimath.geometry.Rotation2d(self.getGyroAngle() * math.pi / 180)))
+
+    def clamp(value : float, lower : float = -1.0, upper : float = 1.0):
+        if (value > upper):
+            return upper
+        if (value < lower):
+            return lower
+        return value
 
     def setInAuton(self, state):
         self.inAuton = state
