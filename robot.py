@@ -236,7 +236,7 @@ class MyRobot(wpilib.TimedRobot):
                         config['MIN_TARGET_ASPECT_RATIO_APRILTAG'],
                         config['MAX_TARGET_ASPECT_RATIO_APRILTAG'],
                         config['UPDATE_POSE'])
-
+        vision.setToAprilTagPipeline()
         return vision
 
 
@@ -498,7 +498,6 @@ class MyRobot(wpilib.TimedRobot):
 
     def teleopPeriodic(self):
         operator = self.operator.xboxController
-
         # Use only if limit switches BOTH break.
         #if (operator.getLeftBumper() and operator.getRightBumper()):
             #print("Elevator: Bypassing Elevator Lower Limit Switches")
@@ -560,7 +559,9 @@ class MyRobot(wpilib.TimedRobot):
             self.drivetrain.setWheelLock(True)
         else:
             self.drivetrain.setWheelLock(False)
-        
+        if(driver.getAButton()):
+            self.drivetrain.alignWithApril()
+            return False
         #Manuevers
         """
         rcw = self.deadzoneCorrection(driver.getRightX() * rotational_clutch, self.driver.deadzone)
@@ -665,7 +666,6 @@ class MyRobot(wpilib.TimedRobot):
             # Otherwise, make sure we are explicitly doing nothing, so bot does not drift.
             else:
                 self.drivetrain.idle()
-            print("driving")
         return False
 
     def getPOVCorner(self, value):

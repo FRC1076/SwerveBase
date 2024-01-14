@@ -24,6 +24,13 @@ TargetConfig = namedtuple('TargetConfig', ['sd_prefix', 'target_kP', 'target_kI'
 BearingConfig = namedtuple('BearingConfig', ['sd_prefix', 'bearing_kP', 'bearing_kI', 'bearing_kD'])
 VisionDriveConfig = namedtuple('VisionDriveConfig', ['sd_prefix', 'x_visionDrive_kP', 'x_visionDrive_kI', 'x_visionDrive_kD', 'y_visionDrive_kP', 'y_visionDrive_kI', 'y_visionDrive_kD', 'target_offsetX_reflective', 'target_target_size_reflective', 'target_offsetX_april', 'target_target_size_april', 'max_target_offset_x', 'min_target_size'])
 
+def clamp(value : float, lower : float = -1.0, upper : float = 1.0):
+        if (value > upper):
+            return upper
+        if (value < lower):
+            return lower
+        return value
+
 class SwerveDrive:
 
     # Get some config options from the dashboard.
@@ -178,13 +185,6 @@ class SwerveDrive:
         x, y, r = self.swervometer.getCOF()
         self.field = wpilib.Field2d()
         self.field.setRobotPose(wpimath.geometry.Pose2d((x + 248.625) * 0.0254, (y + 115.25) * 0.0254, wpimath.geometry.Rotation2d(self.getGyroAngle() * math.pi / 180)))
-
-    def clamp(value : float, lower : float = -1.0, upper : float = 1.0):
-        if (value > upper):
-            return upper
-        if (value < lower):
-            return lower
-        return value
 
     def setInAuton(self, state):
         self.inAuton = state
@@ -1029,6 +1029,19 @@ class SwerveDrive:
             self.bearing = self.getGyroAngle()
             self.log("New Bearing: ", self.bearing)
             self.updateBearing = False
+
+    def alignWithApril(self):
+        x, y, r = self.swervometer.getCOF()
+        #targetOffsetX = self.vision.getPose()[0]
+        #targetOffsetY = self.vision.getPose()[1]
+        if(self.vision.hasTargets()):
+            targetOffsetX = self.vision.getTargetPoseCameraSpace()[0]
+            targetOffsetY = self.vision.getTargetPoseCameraSpace()[2] - 110
+            #print()
+            print(targetOffsetY)
+            if(abs(targetOffsetX) < 3):
+                targetOffsetX /= 2
+            self.goToPose(x + targetOffsetY, y, self.getBearing())
 
     def idle(self):
         for key in self.modules:

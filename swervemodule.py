@@ -20,6 +20,13 @@ ModuleConfig = namedtuple('ModuleConfig', ['sd_prefix', 'zero', 'inverted', 'all
 MAX_VOLTAGE = 5 # Absolute encoder measures from 0V to 5V
 DASH_PREFIX = MODULE_NAMES.SWERVEMODULE
 
+def clamp(value : float, lower : float = -1.0, upper : float = 1.0):
+        if (value > upper):
+            return upper
+        if (value < lower):
+            return lower
+        return value
+
 class SwerveModule:
 
     def __init__(
@@ -107,13 +114,6 @@ class SwerveModule:
 
         #self._requested_angle = 0 # change this to something like 'requested angle' or 'requested encoder value', whatever makes more sense
         #self._requested_speed = 0 #class variable which execute() passes to the drive motor at the end of the robot loop
-
-    def clamp(value : float, lower : float = -1.0, upper : float = 1.0):
-        if (value > upper):
-            return upper
-        if (value < lower):
-            return lower
-        return value
 
     def get_current_velocity(self):
         velocity = self.driveEncoder.getVelocity()
