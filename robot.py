@@ -251,6 +251,7 @@ class MyRobot(wpilib.TimedRobot):
         vision_cfg = VisionDriveConfig(sd_prefix='Vision_Module',
             x_visionDrive_kP=config['X_VISION_DRIVE_KP'], x_visionDrive_kI=config['X_VISION_DRIVE_KI'], x_visionDrive_kD=config['X_VISION_DRIVE_KD'],
             y_visionDrive_kP=config['Y_VISION_DRIVE_KP'], y_visionDrive_kI=config['Y_VISION_DRIVE_KI'], y_visionDrive_kD=config['Y_VISION_DRIVE_KD'],
+            r_visionDrive_kP=config['R_VISION_DRIVE_KP'], r_visionDrive_kI=config['R_VISION_DRIVE_KI'], r_visionDrive_kD=config['R_VISION_DRIVE_KD'],
             target_offsetX_reflective=config['REFLECTIVE_TARGET_OFFSET_X'], target_target_size_reflective=config['REFLECTIVE_TARGET_TARGET_SIZE'],
             target_offsetX_april=config['APRIL_TARGET_OFFSET_X'], target_target_size_april=config['APRIL_TARGET_TARGET_SIZE'],
             max_target_offset_x=config['MAX_TARGET_OFFSET_X'], min_target_size=config['MIN_TARGET_SIZE'])
@@ -519,7 +520,7 @@ class MyRobot(wpilib.TimedRobot):
             #return
         #self.log("TeleopPeriodic: Elevator reset test complete")
 
-        
+        self.drivetrain.updateFilter()
         if self.teleopDrivetrain():
             self.log("TeleoDrivetrain returned true. In a maneuver.")
             return
