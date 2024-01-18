@@ -1069,7 +1069,7 @@ class SwerveDrive:
             #     #self.execute('center')
             #self.move(clamp(targetOffsetX), clamp(targetOffsetY), -targetAngle, self.getBearing())
             xMove = self.visionDrive_x_pid_controller.calculate(targetOffsetX)
-            yMove = self.visionDrive_x_pid_controller.calculate(targetOffsetY)
+            yMove = self.visionDrive_y_pid_controller.calculate(targetOffsetY)
             angleMove = self.visionDrive_r_pid_controller.calculate(self.filteredValues)
             #yMove = 0
             #self.move(clamp(yMove), clamp(xMove), clamp(angleMove), self.getBearing())
@@ -1077,7 +1077,7 @@ class SwerveDrive:
             # self.move(0, 0, -clamp(angleMove), self.getBearing())
             self.set_fwd(clamp(xMove))
             self.set_strafe(clamp(yMove))
-            self.set_rcw(-angleMove)
+            self.set_rcw(-clamp(angleMove))
             self.execute('center')
         else:
             self.set_rcw(0)
