@@ -489,7 +489,6 @@ class SwerveDrive:
             return rcw_error
 
     def move(self, base_fwd, base_strafe, rcw, bearing):
-        
         """
         Calulates the speed and angle for each wheel given the requested movement
         Positive fwd value = Forward robot movement\n
@@ -1073,9 +1072,12 @@ class SwerveDrive:
             yMove = self.visionDrive_x_pid_controller.calculate(targetOffsetY)
             angleMove = self.visionDrive_r_pid_controller.calculate(self.filteredValues)
             #yMove = 0
-            self.move(-clamp(yMove), -clamp(xMove), -clamp(angleMove), self.getBearing())
+            #self.move(clamp(yMove), clamp(xMove), clamp(angleMove), self.getBearing())
             # self.move(-clamp(yMove), 0, -clamp(angleMove), self.getBearing())
             # self.move(0, 0, -clamp(angleMove), self.getBearing())
+            self.set_fwd(clamp(xMove))
+            self.set_strafe(clamp(yMove))
+            self.set_rcw(-angleMove)
             self.execute('center')
         else:
             self.set_rcw(0)

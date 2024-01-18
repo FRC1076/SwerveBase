@@ -128,7 +128,7 @@ drivetrainConfig = {
     'Y_VISION_DRIVE_KP': 0.006, #0.005, # 0.0125,
     'Y_VISION_DRIVE_KI': 0, #0.0001, #0.0006, #0.0045, #0.0, # 0.00001,
     'Y_VISION_DRIVE_KD': 0.000,
-    'R_VISION_DRIVE_KP': 0.013, # 0.0005,
+    'R_VISION_DRIVE_KP': 0.008, # 0.0005,
     'R_VISION_DRIVE_KI': 0.00, #0.0006, #0.0045, # 0.00001,
     'R_VISION_DRIVE_KD': 0, #0.0005, # 0.0005,
     'REFLECTIVE_TARGET_TARGET_SIZE': 0.546, # 0.546% of the total field of view
