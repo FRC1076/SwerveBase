@@ -48,13 +48,13 @@ class Vision:
             return True
         return False
 
-    def getTargetOffsetX(self):
+    def gettargetErrorX(self):
         if self.hasTargets():
             return self.table.getNumber('tx', 0)
         else:
             print('No vision target.')
 
-    def getTargetOffsetY(self):
+    def gettargetErrorY(self):
         if self.hasTargets():
             return self.table.getNumber('ty', 0)
         else:

@@ -180,9 +180,9 @@ class SwerveDrive:
         #self.visionRotationFilter = LinearFilter([], []).singlePoleIIR(0.1, 0.02)
         self.visionRotationFilter = LinearFilter([], []).movingAverage(5)
         self.filteredValues = 0
-        self.reflectiveTargetOffsetX = self.visionDrive_config.target_offsetX_reflective
+        self.reflectivetargetErrorX = self.visionDrive_config.target_offsetX_reflective
         self.reflectiveTargetTargetSize = self.visionDrive_config.target_target_size_reflective
-        self.aprilTargetOffsetX = self.visionDrive_config.target_offsetX_april
+        self.apriltargetErrorX = self.visionDrive_config.target_offsetX_april
         self.aprilTargetTargetSize = self.visionDrive_config.target_target_size_april
         self.max_target_offset_x = self.visionDrive_config.max_target_offset_x
         self.min_target_size = self.visionDrive_config.min_target_size
@@ -531,10 +531,10 @@ class SwerveDrive:
         else:
             self.set_rcw(rcw)
 
-    def goToOffsetAndTargetSize(self, targetOffsetX, targetTargetSize):
+    def goToOffsetAndTargetSize(self, targetErrorX, targetTargetSize):
         if self.vision:
             
-            self.log("goToOffsetAndTargetSize: targetOffsetX: ", targetOffsetX, " targetTargetSize: ", targetTargetSize)
+            self.log("goToOffsetAndTargetSize: targetErrorX: ", targetErrorX, " targetTargetSize: ", targetTargetSize)
             YAW = 0.0
             if(self.getGyroYaw() >= -90 and self.getGyroYaw() <= 90):
                 YAW = 0.0
@@ -554,7 +554,7 @@ class SwerveDrive:
                 self.idle()
                 return False
 
-            x_error = self.visionDrive_x_pid_controller.calculate(offsetX, targetOffsetX)
+            x_error = self.visionDrive_x_pid_controller.calculate(offsetX, targetErrorX)
             x_error = -x_error
             x_error = self.vision_drive_clamp(x_error, 0, 0.1)
             
@@ -594,12 +594,12 @@ class SwerveDrive:
 
     def goToAprilTagCentered(self):
         self.vision.setToAprilTagPipeline()
-        return self.goToOffsetAndTargetSize(self.aprilTagTargetOffsetX,
+        return self.goToOffsetAndTargetSize(self.aprilTagtargetErrorX,
                                             self.aprilTagTargetTargetSize)
 
     def goToReflectiveTapeCentered(self):
         self.vision.setToReflectivePipeline()
-        return self.goToOffsetAndTargetSize(self.reflectiveTargetOffsetX,
+        return self.goToOffsetAndTargetSize(self.reflectivetargetErrorX,
                                             self.reflectiveTargetTargetSize)
 
     # def halfMoonBalance(self, checkpointX, checkpointY, cornerX, cornerY, bearing, tolerance):
@@ -1038,39 +1038,39 @@ class SwerveDrive:
             self.log("New Bearing: ", self.bearing)
             self.updateBearing = False
 
-    def alignWithApril(self):
+    def alignWithApril(self, offsetX, offsetY, offsetAngle):
         x, y, r = self.swervometer.getCOF()
-        #targetOffsetX = self.vision.getPose()[0]
-        #targetOffsetY = self.vision.getPose()[1]
+        #targetErrorX = self.vision.getPose()[0]
+        #targetErrorY = self.vision.getPose()[1]
         if(self.vision.hasTargets()):
-            targetOffsetX = self.vision.getTargetPoseCameraSpace()[0]
-            targetOffsetY = self.vision.getTargetPoseCameraSpace()[2] - 75
-            #targetAngle = math.degrees(math.atan(targetOffsetX / targetOffsetY))
-            targetAngle = self.vision.getTargetPoseCameraSpace()[4]
-            #targetAngle = 0
+            targetErrorX = self.vision.getTargetPoseCameraSpace()[0] - offsetX
+            targetErrorY = self.vision.getTargetPoseCameraSpace()[2] - offsetY
+            #targetErrorAngle = math.degrees(math.atan(targetErrorX / targetErrorY))
+            targetErrorAngle = self.filteredValues - offsetAngle
+            #targetErrorAngle = 0
             #print(self.vision.getTargetPoseCameraSpace()[4])
             #print()
-            #print(targetAngle)
+            #print(targetErrorAngle)
 
-            # if(abs(targetOffsetX) < 3):
-            #     targetOffsetX /= 2
-            # if(abs(targetOffsetY) < 3):
-            #     targetOffsetY /= 2
+            # if(abs(targetErrorX) < 3):
+            #     targetErrorX /= 2
+            # if(abs(targetErrorY) < 3):
+            #     targetErrorY /= 2
             # rotationSpeed = self.visionDrive_r_pid_controller.calculate(-self.filteredValues)
             # if(not self.visionDrive_r_pid_controller.atSetpoint()):
             #     self.set_rcw(rotationSpeed)
-            # self.goToPose(x + targetOffsetY, y - targetOffsetX, self.getBearing())
-            # #self.move(0, 0, clamp(targetAngle) / 5, self.getBearing())
+            # self.goToPose(x + targetErrorY, y - targetErrorX, self.getBearing())
+            # #self.move(0, 0, clamp(targetErrorAngle) / 5, self.getBearing())
             # #print(self.visionDrive_r_pid_controller.getPositionError())
             # rotationSpeed = self.visionDrive_r_pid_controller.calculate(-self.filteredValues)
             # #print(self.visionDrive_r_pid_controller.atSetpoint())
             # if(not self.visionDrive_r_pid_controller.atSetpoint()):
             #     self.set_rcw(rotationSpeed)
             #     #self.execute('center')
-            #self.move(clamp(targetOffsetX), clamp(targetOffsetY), -targetAngle, self.getBearing())
-            xMove = self.visionDrive_x_pid_controller.calculate(targetOffsetX)
-            yMove = self.visionDrive_y_pid_controller.calculate(targetOffsetY)
-            angleMove = self.visionDrive_r_pid_controller.calculate(self.filteredValues)
+            #self.move(clamp(targetErrorX), clamp(targetErrorY), -targetErrorAngle, self.getBearing())
+            xMove = self.visionDrive_x_pid_controller.calculate(targetErrorX)
+            yMove = self.visionDrive_y_pid_controller.calculate(targetErrorY)
+            angleMove = self.visionDrive_r_pid_controller.calculate(targetErrorAngle)
             #yMove = 0
             #self.move(clamp(yMove), clamp(xMove), clamp(angleMove), self.getBearing())
             # self.move(-clamp(yMove), 0, -clamp(angleMove), self.getBearing())
@@ -1085,11 +1085,11 @@ class SwerveDrive:
     
     def updateFilter(self):
         if(self.vision.hasTargets()):
-            targetAngle = self.vision.getTargetPoseCameraSpace()[4]
-            self.filteredValues = self.visionRotationFilter.calculate(targetAngle)
+            targetErrorAngle = self.vision.getTargetPoseCameraSpace()[4]
+            self.filteredValues = self.visionRotationFilter.calculate(targetErrorAngle)
         else:
-            targetAngle = 0
-            self.filteredValues = self.visionRotationFilter.calculate(targetAngle)
+            targetErrorAngle = 0
+            self.filteredValues = self.visionRotationFilter.calculate(targetErrorAngle)
 
     def idle(self):
         for key in self.modules:

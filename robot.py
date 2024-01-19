@@ -561,7 +561,7 @@ class MyRobot(wpilib.TimedRobot):
         else:
             self.drivetrain.setWheelLock(False)
         if(driver.getAButton()):
-            self.drivetrain.alignWithApril()
+            self.drivetrain.alignWithApril(0, 75, 30)
             return False
         #Manuevers
         """
