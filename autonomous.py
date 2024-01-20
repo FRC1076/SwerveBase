@@ -35,6 +35,10 @@ class Autonomous:
             y = self.autonTask[2]
             bearing = self.autonTask[3]
             if self.drivetrain.goToPose(x, y, bearing):
+                self.drivetrain.set_fwd(0)
+                self.drivetrain.set_strafe(0)
+                self.drivetrain.set_rcw(0)
+                self.drivetrain.execute('center')
                 self.taskListCounter += 1 # Move on to next task.
             return True
         

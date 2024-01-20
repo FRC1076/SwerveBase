@@ -90,12 +90,12 @@ drivetrainConfig = {
     'BALANCE_YAW_KP': 0.005,
     'BALANCE_YAW_KI': 0.00001,
     'BALANCE_YAW_KD': 0.00001,
-    'TARGET_KP': 0.025,
-    'TARGET_KI': 0.001, #0.005,
-    'TARGET_KD': 0.001,
+    'TARGET_KP': 0.02,
+    'TARGET_KI': 0.00, #0.005,
+    'TARGET_KD': 0.0001,
     'BEARING_KP': 0.025,
-    'BEARING_KI': 0.01,
-    'BEARING_KD': 0.0001,
+    'BEARING_KI': 0.0,
+    'BEARING_KD': 0.000,
     'ROBOT_INCHES_PER_ROTATION': 1.0, #1.793, # Inches per rotation of wheels
     'TELEOP_OPEN_LOOP_RAMP_RATE': 0.125, # Improves maneuverability of bot.
     'TELEOP_CLOSED_LOOP_RAMP_RATE': 0.125,
