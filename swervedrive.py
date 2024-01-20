@@ -1,6 +1,6 @@
 from navx import AHRS
 import math
-from util import clamp
+#from util import clamp
 
 #from magicbot import magiccomponent
 import swervemodule
@@ -11,16 +11,26 @@ from networktables import NetworkTables
 from networktables.util import ntproperty
 from collections import namedtuple
 from wpimath.controller import PIDController
+import wpimath.geometry
 from swervometer import Swervometer
 from logger import Logger
 from robotconfig import MODULE_NAMES
+import wpilib
+from wpimath.filter import LinearFilter
 
 DASH_PREFIX = MODULE_NAMES.SWERVEDRIVE
 
 BalanceConfig = namedtuple('BalanceConfig', ['sd_prefix', 'balance_pitch_kP', 'balance_pitch_kI', 'balance_pitch_kD', 'balance_yaw_kP', 'balance_yaw_kI', 'balance_yaw_kD'])
 TargetConfig = namedtuple('TargetConfig', ['sd_prefix', 'target_kP', 'target_kI', 'target_kD'])
 BearingConfig = namedtuple('BearingConfig', ['sd_prefix', 'bearing_kP', 'bearing_kI', 'bearing_kD'])
-VisionDriveConfig = namedtuple('VisionDriveConfig', ['sd_prefix', 'x_visionDrive_kP', 'x_visionDrive_kI', 'x_visionDrive_kD', 'y_visionDrive_kP', 'y_visionDrive_kI', 'y_visionDrive_kD', 'target_offsetX_reflective', 'target_target_size_reflective', 'target_offsetX_april', 'target_target_size_april', 'max_target_offset_x', 'min_target_size'])
+VisionDriveConfig = namedtuple('VisionDriveConfig', ['sd_prefix', 'x_visionDrive_kP', 'x_visionDrive_kI', 'x_visionDrive_kD', 'y_visionDrive_kP', 'y_visionDrive_kI', 'y_visionDrive_kD', 'r_visionDrive_kP', 'r_visionDrive_kI', 'r_visionDrive_kD', 'target_offsetX_reflective', 'target_target_size_reflective', 'target_offsetX_april', 'target_target_size_april', 'max_target_offset_x', 'min_target_size'])
+
+def clamp(value : float, lower : float = -1.0, upper : float = 1.0):
+        if (value > upper):
+            return upper
+        if (value < lower):
+            return lower
+        return value
 
 class SwerveDrive:
 
@@ -115,22 +125,22 @@ class SwerveDrive:
 
         self.wheel_lock = False
         
-        self.balance_config = _balance_cfg
-        self.balance_pitch_kP = self.balance_config.balance_pitch_kP
-        self.balance_pitch_kI = self.balance_config.balance_pitch_kI
-        self.balance_pitch_kD = self.balance_config.balance_pitch_kD
+        # self.balance_config = _balance_cfg
+        # self.balance_pitch_kP = self.balance_config.balance_pitch_kP
+        # self.balance_pitch_kI = self.balance_config.balance_pitch_kI
+        # self.balance_pitch_kD = self.balance_config.balance_pitch_kD
 
-        self.balance_yaw_kP = self.balance_config.balance_yaw_kP
-        self.balance_yaw_kI = self.balance_config.balance_yaw_kI
-        self.balance_yaw_kD = self.balance_config.balance_yaw_kD
+        # self.balance_yaw_kP = self.balance_config.balance_yaw_kP
+        # self.balance_yaw_kI = self.balance_config.balance_yaw_kI
+        # self.balance_yaw_kD = self.balance_config.balance_yaw_kD
 
-        self.balance_pitch_pid_controller = PIDController(self.balance_config.balance_pitch_kP, self.balance_config.balance_pitch_kI, self.balance_config.balance_pitch_kD)
-        self.balance_pitch_pid_controller.enableContinuousInput(-180, 180)
-        self.balance_pitch_pid_controller.setTolerance(0.5, 0.5) # may need to tweak this with PID testing
+        # self.balance_pitch_pid_controller = PIDController(self.balance_config.balance_pitch_kP, self.balance_config.balance_pitch_kI, self.balance_config.balance_pitch_kD)
+        # self.balance_pitch_pid_controller.enableContinuousInput(-180, 180)
+        # self.balance_pitch_pid_controller.setTolerance(0.5, 0.5) # may need to tweak this with PID testing
 
-        self.balance_yaw_pid_controller = PIDController(self.balance_config.balance_yaw_kP, self.balance_config.balance_yaw_kI, self.balance_config.balance_yaw_kD)
-        self.balance_yaw_pid_controller.enableContinuousInput(0, 360)
-        self.balance_yaw_pid_controller.setTolerance(0.5, 0.5) # may need to tweak this with PID testing
+        # self.balance_yaw_pid_controller = PIDController(self.balance_config.balance_yaw_kP, self.balance_config.balance_yaw_kI, self.balance_config.balance_yaw_kD)
+        # self.balance_yaw_pid_controller.enableContinuousInput(0, 360)
+        # self.balance_yaw_pid_controller.setTolerance(0.5, 0.5) # may need to tweak this with PID testing
 
         self.target_config = _target_cfg
         self.target_kP = self.target_config.target_kP
@@ -158,13 +168,21 @@ class SwerveDrive:
         # TODO: 
         # - tune PID values
         self.visionDrive_config = _visionDrive_cfg
-        self.visionDrive_x_pid_controller = PIDController(self.visionDrive_config.x_visionDrive_kP, self.visionDrive_config.x_visionDrive_kP, self.visionDrive_config.x_visionDrive_kP)
+        self.visionDrive_x_pid_controller = PIDController(self.visionDrive_config.x_visionDrive_kP, self.visionDrive_config.x_visionDrive_kI, self.visionDrive_config.x_visionDrive_kD)
         self.visionDrive_x_pid_controller.setTolerance(0.5, 0.5)
-        self.visionDrive_y_pid_controller = PIDController(self.visionDrive_config.y_visionDrive_kP, self.visionDrive_config.y_visionDrive_kP, self.visionDrive_config.y_visionDrive_kP)
-        self.visionDrive_y_pid_controller.setTolerance(0.001, 0.001)
-        self.reflectiveTargetOffsetX = self.visionDrive_config.target_offsetX_reflective
+        self.visionDrive_x_pid_controller.setSetpoint(0)
+        self.visionDrive_y_pid_controller = PIDController(self.visionDrive_config.y_visionDrive_kP, self.visionDrive_config.y_visionDrive_kI, self.visionDrive_config.y_visionDrive_kD)
+        self.visionDrive_y_pid_controller.setTolerance(0.5, 0.5)
+        self.visionDrive_y_pid_controller.setSetpoint(0)
+        self.visionDrive_r_pid_controller = PIDController(self.visionDrive_config.r_visionDrive_kP, self.visionDrive_config.r_visionDrive_kI, self.visionDrive_config.r_visionDrive_kD)
+        self.visionDrive_r_pid_controller.setTolerance(5, 0.5)
+        self.visionDrive_r_pid_controller.setSetpoint(0)
+        #self.visionRotationFilter = LinearFilter([], []).singlePoleIIR(0.1, 0.02)
+        self.visionRotationFilter = LinearFilter([], []).movingAverage(5)
+        self.filteredValues = 0
+        self.reflectivetargetErrorX = self.visionDrive_config.target_offsetX_reflective
         self.reflectiveTargetTargetSize = self.visionDrive_config.target_target_size_reflective
-        self.aprilTargetOffsetX = self.visionDrive_config.target_offsetX_april
+        self.apriltargetErrorX = self.visionDrive_config.target_offsetX_april
         self.aprilTargetTargetSize = self.visionDrive_config.target_target_size_april
         self.max_target_offset_x = self.visionDrive_config.max_target_offset_x
         self.min_target_size = self.visionDrive_config.min_target_size
@@ -172,6 +190,10 @@ class SwerveDrive:
         self.inAuton = True
         self.autonSteerStraight = _auton_steer_straight
         self.teleopSteerStraight = _teleop_steer_straight
+
+        x, y, r = self.swervometer.getCOF()
+        self.field = wpilib.Field2d()
+        self.field.setRobotPose(wpimath.geometry.Pose2d((x + 248.625) * 0.0254, (y + 115.25) * 0.0254, wpimath.geometry.Rotation2d(self.getGyroAngle() * math.pi / 180)))
 
     def setInAuton(self, state):
         self.inAuton = state
@@ -268,10 +290,10 @@ class SwerveDrive:
         #print ("Gyro Adjustment", self.swervometer.getTeamGyroAdjustment())
         return angle
         
-    def getGyroBalance(self):
-        balance = (self.gyro.getPitch() - self.gyro_balance_zero)
+    # def getGyroBalance(self):
+    #     balance = (self.gyro.getPitch() - self.gyro_balance_zero)
 
-        return balance
+    #     return balance
 
     #raw level side to side
     def getGyroPitch(self):
@@ -385,59 +407,59 @@ class SwerveDrive:
 
         self._requested_vectors['rcw'] = rcw
 
-    def balance(self):
+    # def balance(self):
         
-        self.log("Balance starting")
+    #     self.log("Balance starting")
 
-        #self.printGyro()
+    #     #self.printGyro()
 
-        yawSign = -1
+    #     yawSign = -1
 
-        if(self.getGyroYaw() >= -90 and self.getGyroYaw() <= 90):
-            BALANCED_YAW = 0.0
-            yawSign = +1
-        else:
-            BALANCED_YAW = 180.0
-            yawSign = -1
-        BALANCED_PITCH = 0.0
+    #     if(self.getGyroYaw() >= -90 and self.getGyroYaw() <= 90):
+    #         BALANCED_YAW = 0.0
+    #         yawSign = +1
+    #     else:
+    #         BALANCED_YAW = 180.0
+    #         yawSign = -1
+    #     BALANCED_PITCH = 0.0
 
-        self.log("Balance: Yaw = ", self.getGyroYaw(), " BALANCED_YAW = ", BALANCED_YAW, " BALANCED_PITCH = ", BALANCED_PITCH)
-        self.log("Balance: pitch:", self.getGyroBalance())
-        pitch_error = self.balance_pitch_pid_controller.calculate(self.getGyroBalance(), BALANCED_PITCH)
-        yaw_error = self.balance_yaw_pid_controller.calculate(self.getGyroYaw(), BALANCED_YAW)
-        self.log("Balance: pitch_error:", pitch_error, ", yaw_error: ", yaw_error)
+    #     self.log("Balance: Yaw = ", self.getGyroYaw(), " BALANCED_YAW = ", BALANCED_YAW, " BALANCED_PITCH = ", BALANCED_PITCH)
+    #     self.log("Balance: pitch:", self.getGyroBalance())
+    #     pitch_error = self.balance_pitch_pid_controller.calculate(self.getGyroBalance(), BALANCED_PITCH)
+    #     yaw_error = self.balance_yaw_pid_controller.calculate(self.getGyroYaw(), BALANCED_YAW)
+    #     self.log("Balance: pitch_error:", pitch_error, ", yaw_error: ", yaw_error)
 
-        # Set the output to 0 if at setpoint or to a value between (-1, 1)
-        if self.balance_pitch_pid_controller.atSetpoint():
-            pitch_output = 0
-        else:
-            #pitch_output = clamp(pitch_error)
-            pitch_output = -pitch_error # Deliberately flipping sign
-            pitch_output *= self.swervometer.getTeamMoveAdjustment()
+    #     # Set the output to 0 if at setpoint or to a value between (-1, 1)
+    #     if self.balance_pitch_pid_controller.atSetpoint():
+    #         pitch_output = 0
+    #     else:
+    #         #pitch_output = clamp(pitch_error)
+    #         pitch_output = -pitch_error # Deliberately flipping sign
+    #         pitch_output *= self.swervometer.getTeamMoveAdjustment()
         
-        if self.balance_yaw_pid_controller.atSetpoint():
-            yaw_output = 0
-        else:
-            yaw_output = clamp(yaw_error)
+    #     if self.balance_yaw_pid_controller.atSetpoint():
+    #         yaw_output = 0
+    #     else:
+    #         yaw_output = clamp(yaw_error)
         
-        self.log("Balance: Pitch setpoint: ", self.balance_pitch_pid_controller.getSetpoint(), "pitch output: ", pitch_output, " pitch error: ", pitch_error)
-        self.log("Balance: Yaw setpoint: ", self.balance_yaw_pid_controller.getSetpoint(), "yaw output: ", yaw_output, " yaw error: ", yaw_error)
+    #     self.log("Balance: Pitch setpoint: ", self.balance_pitch_pid_controller.getSetpoint(), "pitch output: ", pitch_output, " pitch error: ", pitch_error)
+    #     self.log("Balance: Yaw setpoint: ", self.balance_yaw_pid_controller.getSetpoint(), "yaw output: ", yaw_output, " yaw error: ", yaw_error)
 
-        # Put the output to the dashboard
-        self.log('Balance pitch output', pitch_output)
-        self.log('Balance yaw output', yaw_output)
-        self.move(yawSign * pitch_output, 0.0, yaw_output, self.bearing)
+    #     # Put the output to the dashboard
+    #     self.log('Balance pitch output', pitch_output)
+    #     self.log('Balance yaw output', yaw_output)
+    #     self.move(yawSign * pitch_output, 0.0, yaw_output, self.bearing)
         
-        self.update_smartdash()
+    #     self.update_smartdash()
 
-        self.execute('center')
+    #     self.execute('center')
 
-        if self.balance_pitch_pid_controller.atSetpoint() and self.balance_yaw_pid_controller.atSetpoint():
-            self.log("Balance: atSetpoint")
-            return True
-        else:
-            self.log("Balance: not atSetpoint")
-            return False
+    #     if self.balance_pitch_pid_controller.atSetpoint() and self.balance_yaw_pid_controller.atSetpoint():
+    #         self.log("Balance: atSetpoint")
+    #         return True
+    #     else:
+    #         self.log("Balance: not atSetpoint")
+    #         return False
 
     def steerStraight(self, rcw, bearing):
         
@@ -467,7 +489,6 @@ class SwerveDrive:
             return rcw_error
 
     def move(self, base_fwd, base_strafe, rcw, bearing):
-        
         """
         Calulates the speed and angle for each wheel given the requested movement
         Positive fwd value = Forward robot movement\n
@@ -510,10 +531,10 @@ class SwerveDrive:
         else:
             self.set_rcw(rcw)
 
-    def goToOffsetAndTargetSize(self, targetOffsetX, targetTargetSize):
+    def goToOffsetAndTargetSize(self, targetErrorX, targetTargetSize):
         if self.vision:
             
-            self.log("goToOffsetAndTargetSize: targetOffsetX: ", targetOffsetX, " targetTargetSize: ", targetTargetSize)
+            self.log("goToOffsetAndTargetSize: targetErrorX: ", targetErrorX, " targetTargetSize: ", targetTargetSize)
             YAW = 0.0
             if(self.getGyroYaw() >= -90 and self.getGyroYaw() <= 90):
                 YAW = 0.0
@@ -533,7 +554,7 @@ class SwerveDrive:
                 self.idle()
                 return False
 
-            x_error = self.visionDrive_x_pid_controller.calculate(offsetX, targetOffsetX)
+            x_error = self.visionDrive_x_pid_controller.calculate(offsetX, targetErrorX)
             x_error = -x_error
             x_error = self.vision_drive_clamp(x_error, 0, 0.1)
             
@@ -573,72 +594,72 @@ class SwerveDrive:
 
     def goToAprilTagCentered(self):
         self.vision.setToAprilTagPipeline()
-        return self.goToOffsetAndTargetSize(self.aprilTagTargetOffsetX,
+        return self.goToOffsetAndTargetSize(self.aprilTagtargetErrorX,
                                             self.aprilTagTargetTargetSize)
 
     def goToReflectiveTapeCentered(self):
         self.vision.setToReflectivePipeline()
-        return self.goToOffsetAndTargetSize(self.reflectiveTargetOffsetX,
+        return self.goToOffsetAndTargetSize(self.reflectivetargetErrorX,
                                             self.reflectiveTargetTargetSize)
 
-    def halfMoonBalance(self, checkpointX, checkpointY, cornerX, cornerY, bearing, tolerance):
+    # def halfMoonBalance(self, checkpointX, checkpointY, cornerX, cornerY, bearing, tolerance):
 
-        currentX, currentY, currentBearing = self.swervometer.getCOF()
+    #     currentX, currentY, currentBearing = self.swervometer.getCOF()
 
-        # Figure out if the bot needs to rotate right or left and turning on which corner.
-        if checkpointY < cornerY:
-            bearingAdjustment = 175 # Slightly less than 180 to indicate direction to turn.
-            corner = 'rear_left'
-            slideY = cornerY + 20
-        else:
-            bearingAdjustment = -175 # Slightly less than 180 to indicate direction to turn.
-            corner = 'rear_right'
-            slideY = cornerY - 20
+    #     # Figure out if the bot needs to rotate right or left and turning on which corner.
+    #     if checkpointY < cornerY:
+    #         bearingAdjustment = 175 # Slightly less than 180 to indicate direction to turn.
+    #         corner = 'rear_left'
+    #         slideY = cornerY + 20
+    #     else:
+    #         bearingAdjustment = -175 # Slightly less than 180 to indicate direction to turn.
+    #         corner = 'rear_right'
+    #         slideY = cornerY - 20
 
-        # Figure out where the bot needs to come back towards until it needs to balance.
-        if checkpointX > 0:
-            targetX = checkpointX + 50
-        else:
-            targetX = checkpointX - 50
+    #     # Figure out where the bot needs to come back towards until it needs to balance.
+    #     if checkpointX > 0:
+    #         targetX = checkpointX + 50
+    #     else:
+    #         targetX = checkpointX - 50
 
-        # Figure out the new bearing after a "180" (175).
-        newBearing = (bearing + bearingAdjustment) % 360
+    #     # Figure out the new bearing after a "180" (175).
+    #     newBearing = (bearing + bearingAdjustment) % 360
 
-        # Figure out if the bot is close to the right bearing.
-        bearingDifference = abs(self.getBearing() - newBearing)
+    #     # Figure out if the bot is close to the right bearing.
+    #     bearingDifference = abs(self.getBearing() - newBearing)
 
-        # Final Stage: Balancing
-        if abs(self.getGyroBalance()) > tolerance:
-            self.log("Swervedrive: Half-Moon: Balancing")
-            return self.balance()
+    #     # Final Stage: Balancing
+    #     if abs(self.getGyroBalance()) > tolerance:
+    #         self.log("Swervedrive: Half-Moon: Balancing")
+    #         return self.balance()
 
-        # Third Stage: If nearly rotated (don't wait for PID), move onto charge station:
-        elif bearingDifference < 10:
-            self.goToPose(targetX, currentY, newBearing)
-            self.execute('center')
-            self.log("Swervedrive: Half-Moon: Moving back")
-            return False
+    #     # Third Stage: If nearly rotated (don't wait for PID), move onto charge station:
+    #     elif bearingDifference < 10:
+    #         self.goToPose(targetX, currentY, newBearing)
+    #         self.execute('center')
+    #         self.log("Swervedrive: Half-Moon: Moving back")
+    #         return False
             
-        # Second Stage: Start corner pivot (don't wait for PID) with a slight Y shift
-        elif abs(currentX) <= abs(cornerX):
-            self.goToPose(currentX, slideY, newBearing)
-            self.execute(corner)
-            self.log("Swervedrive: Half-Moon: Rotating")
-            return False
+    #     # Second Stage: Start corner pivot (don't wait for PID) with a slight Y shift
+    #     elif abs(currentX) <= abs(cornerX):
+    #         self.goToPose(currentX, slideY, newBearing)
+    #         self.execute(corner)
+    #         self.log("Swervedrive: Half-Moon: Rotating")
+    #         return False
         
-        # First Stage: Move to a point just past the pivot corner.
-        else:
-            self.goToPose(checkpointX, checkpointY, bearing)
-            self.log("Swervedrive: Half-Moon: Moving")
-            return False
+    #     # First Stage: Move to a point just past the pivot corner.
+    #     else:
+    #         self.goToPose(checkpointX, checkpointY, bearing)
+    #         self.log("Swervedrive: Half-Moon: Moving")
+    #         return False
        
-    def goToBalance(self, x, y, bearing, tolerance):
-        self.log("SWERVEDRIVE Going to balance:", x, y, bearing, tolerance)
+    # def goToBalance(self, x, y, bearing, tolerance):
+    #     self.log("SWERVEDRIVE Going to balance:", x, y, bearing, tolerance)
 
-        if abs(self.getGyroBalance()) > tolerance:
-            return True
-        else:
-            return self.goToPose(x, y, bearing)
+    #     if abs(self.getGyroBalance()) > tolerance:
+    #         return True
+    #     else:
+    #         return self.goToPose(x, y, bearing)
 
     def goToPose(self, x, y, bearing):
 
@@ -1017,6 +1038,59 @@ class SwerveDrive:
             self.log("New Bearing: ", self.bearing)
             self.updateBearing = False
 
+    def alignWithApril(self, offsetX, offsetY, offsetAngle):
+        x, y, r = self.swervometer.getCOF()
+        #targetErrorX = self.vision.getPose()[0]
+        #targetErrorY = self.vision.getPose()[1]
+        if(self.vision.hasTargets()):
+            targetErrorX = self.vision.getTargetPoseCameraSpace()[0] - offsetX
+            targetErrorY = self.vision.getTargetPoseCameraSpace()[2] - offsetY
+            #targetErrorAngle = math.degrees(math.atan(targetErrorX / targetErrorY))
+            targetErrorAngle = self.filteredValues - offsetAngle
+            #targetErrorAngle = 0
+            #print(self.vision.getTargetPoseCameraSpace()[4])
+            #print()
+            #print(targetErrorAngle)
+
+            # if(abs(targetErrorX) < 3):
+            #     targetErrorX /= 2
+            # if(abs(targetErrorY) < 3):
+            #     targetErrorY /= 2
+            # rotationSpeed = self.visionDrive_r_pid_controller.calculate(-self.filteredValues)
+            # if(not self.visionDrive_r_pid_controller.atSetpoint()):
+            #     self.set_rcw(rotationSpeed)
+            # self.goToPose(x + targetErrorY, y - targetErrorX, self.getBearing())
+            # #self.move(0, 0, clamp(targetErrorAngle) / 5, self.getBearing())
+            # #print(self.visionDrive_r_pid_controller.getPositionError())
+            # rotationSpeed = self.visionDrive_r_pid_controller.calculate(-self.filteredValues)
+            # #print(self.visionDrive_r_pid_controller.atSetpoint())
+            # if(not self.visionDrive_r_pid_controller.atSetpoint()):
+            #     self.set_rcw(rotationSpeed)
+            #     #self.execute('center')
+            #self.move(clamp(targetErrorX), clamp(targetErrorY), -targetErrorAngle, self.getBearing())
+            xMove = self.visionDrive_x_pid_controller.calculate(targetErrorX)
+            yMove = self.visionDrive_y_pid_controller.calculate(targetErrorY)
+            angleMove = self.visionDrive_r_pid_controller.calculate(targetErrorAngle)
+            #yMove = 0
+            #self.move(clamp(yMove), clamp(xMove), clamp(angleMove), self.getBearing())
+            # self.move(-clamp(yMove), 0, -clamp(angleMove), self.getBearing())
+            # self.move(0, 0, -clamp(angleMove), self.getBearing())
+            self.set_fwd(clamp(xMove))
+            self.set_strafe(clamp(yMove))
+            self.set_rcw(-clamp(angleMove))
+            self.execute('center')
+        else:
+            self.set_rcw(0)
+            self.execute('center')
+    
+    def updateFilter(self):
+        if(self.vision.hasTargets()):
+            targetErrorAngle = self.vision.getTargetPoseCameraSpace()[4]
+            self.filteredValues = self.visionRotationFilter.calculate(targetErrorAngle)
+        else:
+            targetErrorAngle = 0
+            self.filteredValues = self.visionRotationFilter.calculate(targetErrorAngle)
+
     def idle(self):
         for key in self.modules:
             self.modules[key].idle()
@@ -1047,22 +1121,26 @@ class SwerveDrive:
         
         self.dashboard.putNumber(DASH_PREFIX, '/Bearing', self.getBearing())
         self.dashboard.putNumber(DASH_PREFIX, '/Gyro Angle', self.getGyroAngle())
-        self.dashboard.putNumber(DASH_PREFIX, '/Gyro Balance', self.getGyroBalance())
+        # self.dashboard.putNumber(DASH_PREFIX, '/Gyro Balance', self.getGyroBalance())
         self.dashboard.putNumber(DASH_PREFIX, '/Gyro Pitch', self.getGyroPitch())
         self.dashboard.putNumber(DASH_PREFIX, '/Bearing', self.getGyroRoll())
         self.dashboard.putNumber(DASH_PREFIX, '/Bearing', self.getGyroYaw())
         
-        self.dashboard.putNumber(DASH_PREFIX, '/Balance Pitch kP', self.balance_pitch_pid_controller.getP())
-        self.dashboard.putNumber(DASH_PREFIX, '/Balance Pitch kI', self.balance_pitch_pid_controller.getI())
-        self.dashboard.putNumber(DASH_PREFIX, '/Balance Pitch kD', self.balance_pitch_pid_controller.getD())
+        # self.dashboard.putNumber(DASH_PREFIX, '/Balance Pitch kP', self.balance_pitch_pid_controller.getP())
+        # self.dashboard.putNumber(DASH_PREFIX, '/Balance Pitch kI', self.balance_pitch_pid_controller.getI())
+        # self.dashboard.putNumber(DASH_PREFIX, '/Balance Pitch kD', self.balance_pitch_pid_controller.getD())
 
-        self.dashboard.putNumber(DASH_PREFIX, '/Balance Yaw kP', self.balance_yaw_pid_controller.getP())
-        self.dashboard.putNumber(DASH_PREFIX, '/Balance Yaw kI', self.balance_yaw_pid_controller.getI())
-        self.dashboard.putNumber(DASH_PREFIX, '/Balance Yaw kD', self.balance_yaw_pid_controller.getD())
+        # self.dashboard.putNumber(DASH_PREFIX, '/Balance Yaw kP', self.balance_yaw_pid_controller.getP())
+        # self.dashboard.putNumber(DASH_PREFIX, '/Balance Yaw kI', self.balance_yaw_pid_controller.getI())
+        # self.dashboard.putNumber(DASH_PREFIX, '/Balance Yaw kD', self.balance_yaw_pid_controller.getD())
 
         for key in self._requested_angles:
             self.dashboard.putNumber(DASH_PREFIX, '/%s_angle' % key, self._requested_angles[key])
             self.dashboard.putNumber(DASH_PREFIX, '/%s_speed' % key, self._requested_speeds[key])
+
+        x, y, r = self.swervometer.getCOF()
+        self.field.setRobotPose(wpimath.geometry.Pose2d((x + 248.625) * 0.0254, (y + 115.25) * 0.0254, wpimath.geometry.Rotation2d(self.getGyroAngle() * math.pi / 180))) #convert our coordinate system to theirs
+        self.dashboard.putField(DASH_PREFIX, '/Field', self.field)
                 
     def log(self, *dataToLog):
         self.logger.log(DASH_PREFIX, dataToLog)   

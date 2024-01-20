@@ -1,5 +1,5 @@
 import math
-from util import clamp
+#from util import clamp
 
 import wpilib
 import wpilib.drive
@@ -19,6 +19,13 @@ ModuleConfig = namedtuple('ModuleConfig', ['sd_prefix', 'zero', 'inverted', 'all
 
 MAX_VOLTAGE = 5 # Absolute encoder measures from 0V to 5V
 DASH_PREFIX = MODULE_NAMES.SWERVEMODULE
+
+def clamp(value : float, lower : float = -1.0, upper : float = 1.0):
+        if (value > upper):
+            return upper
+        if (value < lower):
+            return lower
+        return value
 
 class SwerveModule:
 
