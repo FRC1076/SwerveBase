@@ -32,8 +32,8 @@ swervometerConfig = { # All positions measured in inches
     'USE_COM_ADJUSTMENT': True, # Should robot compensate for CoM lever arms?
     'FIELD_ORIGIN_X': 0.0, # X-Coordinate of field orgin (center of field, viewed from scoring table)
     'FIELD_ORIGIN_Y': 0.0, # Y-Coordinate of field orgin (center of field, viewed from scoring table)
-    'FIELD_RED_A_START_POSITION_X': 248.625, #159.0, # X-Coordinate of starting position A when on red team
-    'FIELD_RED_A_START_POSITION_Y': 16.75, #40.15, #54.25, # Y-Coordinate of starting postion A when on red team
+    'FIELD_RED_A_START_POSITION_X': 294, #values of 2024 on left #248.625, #159.0, # X-Coordinate of starting position A when on red team
+    'FIELD_RED_A_START_POSITION_Y': 57, #values of 2024 on left #16.75, #40.15, #54.25, # Y-Coordinate of starting postion A when on red team
     'FIELD_RED_A_START_ANGLE': 0.0, # Heading angle of starting position A when on red team
     'FIELD_RED_B_START_POSITION_X': 248.625, # X-Coordinate of starting position B when on red team
     'FIELD_RED_B_START_POSITION_Y': -49.25, #-28.25, # Y-Coordinate of starting postion B when on red team
@@ -162,7 +162,7 @@ autonConfig = {
     'DO_COMMUNITY': False, # Only applies for position B
     'AUTON_OPEN_LOOP_RAMP_RATE': 1, # Improves the quality of swervometery by avoiding slippage.
     'AUTON_CLOSED_LOOP_RAMP_RATE': 0,
-    'TASK_RED_A': [['WAIT', 2], ['MOVE', 134.625, 16.75, 180], ['WAIT', 2], ['MOVE', 248.625, 16.75, 180], ['WAIT', 2], ['MOVE', 134.625, 73.75, 180], ['WAIT', 2], ['MOVE', 248.625, 16.75, 180]] #,['MOVE', 91.9375, -40.15, 180]]
+    'TASK_RED_A': [['WAIT', 2], ['MOVE', 180, 57, 180], ['WAIT', 2], ['MOVE', 294, 57, 180], ['WAIT', 2], ['MOVE', 180, 111, 180], ['WAIT', 2], ['MOVE', 294, 57, 180]] #,['MOVE', 91.9375, -40.15, 180]]
     # 'TASK_BLU_A_TF': [['CLAW_INTAKE_AND_STOP'],
     #                     ['POSITION_GRABBER', 2],
     #                     ['ELEVATOR_DOWN'],

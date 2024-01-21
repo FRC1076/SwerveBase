@@ -519,8 +519,8 @@ class MyRobot(wpilib.TimedRobot):
             #self.grabber.update()
             #return
         #self.log("TeleopPeriodic: Elevator reset test complete")
-
-        self.drivetrain.updateFilter()
+        #print(self.vision.getPose()[0], self.vision.getPose()[1], self.vision.getPose()[2])
+        self.drivetrain.visionPeriodic()
         if self.teleopDrivetrain():
             self.log("TeleoDrivetrain returned true. In a maneuver.")
             return
@@ -706,6 +706,7 @@ class MyRobot(wpilib.TimedRobot):
         
     def autonomousPeriodic(self):
          self.auton.executeAuton()
+         self.drivetrain.visionPeriodic()
          return False
     """
     def autonomousPeriodic(self):

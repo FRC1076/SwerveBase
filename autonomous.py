@@ -25,6 +25,10 @@ class Autonomous:
             self.autonTimer.start()
 
         if self.taskListCounter >= len(self.taskList):
+            self.drivetrain.set_fwd(0)
+            self.drivetrain.set_strafe(0)
+            self.drivetrain.set_rcw(0)
+            self.drivetrain.execute('center')
             print("tasks arae done")
             return False
         
