@@ -58,6 +58,10 @@ class Autonomous:
             if(self.autonTimer.get() - self.lastTime > self.autonTask[1]):
                 self.lastTime = -1
                 self.taskListCounter += 1
+        
+        elif self.autonTask[0] == 'UPDATE_POSE':
+            self.drivetrain.visionUpdatePose()
+            self.taskListCounter += 1
 
         return False
     

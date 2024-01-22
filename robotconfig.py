@@ -125,7 +125,7 @@ drivetrainConfig = {
     'X_VISION_DRIVE_KP': 0.01, # 0.005,
     'X_VISION_DRIVE_KI': 0.000, #0.0006, #0.0045, # 0.00001,
     'X_VISION_DRIVE_KD': 0.0, # 0.0005,
-    'Y_VISION_DRIVE_KP': 0.006, #0.005, # 0.0125,
+    'Y_VISION_DRIVE_KP': 0.01, #0.005, # 0.0125,
     'Y_VISION_DRIVE_KI': 0, #0.0001, #0.0006, #0.0045, #0.0, # 0.00001,
     'Y_VISION_DRIVE_KD': 0.000,
     'R_VISION_DRIVE_KP': 0.003, # 0.0005,
@@ -162,7 +162,7 @@ autonConfig = {
     'DO_COMMUNITY': False, # Only applies for position B
     'AUTON_OPEN_LOOP_RAMP_RATE': 1, # Improves the quality of swervometery by avoiding slippage.
     'AUTON_CLOSED_LOOP_RAMP_RATE': 0,
-    'TASK_RED_A': [['WAIT', 2], ['MOVE', 180, 57, 180], ['WAIT', 2], ['MOVE', 294, 57, 180], ['WAIT', 2], ['MOVE', 180, 111, 180], ['WAIT', 2], ['MOVE', 294, 57, 180]] #,['MOVE', 91.9375, -40.15, 180]]
+    'TASK_RED_A': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 180, 57, 180], ['WAIT', 2], ['MOVE', 294, 57, 180], ['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 180, 111, 180], ['WAIT', 2], ['MOVE', 294, 57, 180]] #,['MOVE', 91.9375, -40.15, 180]]
     # 'TASK_BLU_A_TF': [['CLAW_INTAKE_AND_STOP'],
     #                     ['POSITION_GRABBER', 2],
     #                     ['ELEVATOR_DOWN'],

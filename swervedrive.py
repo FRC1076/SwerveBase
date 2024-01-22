@@ -1014,16 +1014,9 @@ class SwerveDrive:
             self.log("Module: Key: ", key)
             self.modules[key].execute()
         COFX, COFY, COFAngle = self.swervometer.calculateCOFPose(self.modules, self.getGyroAngle())
-        #print(COFX, COFY, self.vision.getPose()[0], self.vision.getPose()[1])
-
-        #if(self.vision.hasTargets() and self.vision.getTargetPoseCameraSpace()[0] ** 2 + self.vision.getTargetPoseCameraSpace()[2] ** 2 < 5500):
-            #remove noise and bad data
-        newX = self.poseXFilter.calculate(self.vision.getPose()[0])
-        newY = self.poseYFilter.calculate(self.vision.getPose()[1])
-        self.swervometer.setCOF(newX, newY, self.getBearing())
-        COFX, COFY, COFAngle = self.swervometer.getCOF()
-            #pass
+        print(COFX, COFY, self.vision.getPose()[0], self.vision.getPose()[1])
         print(COFX, COFY)
+        print("\n")
         #else:
         #print(COFX, COFY)
         """
@@ -1105,6 +1098,12 @@ class SwerveDrive:
         else:
             targetErrorAngle = 0
             self.filteredValues = self.visionRotationFilter.calculate(targetErrorAngle)
+    
+    def visionUpdatePose(self):
+        if(self.vision.hasTargets()):
+            newX = self.poseXFilter.calculate(self.vision.getPose()[0])
+            newY = self.poseYFilter.calculate(self.vision.getPose()[1])
+            self.swervometer.setCOF(newX, newY, self.getBearing())
 
     def idle(self):
         for key in self.modules:
