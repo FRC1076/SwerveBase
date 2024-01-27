@@ -50,8 +50,8 @@ swervometerConfig = { # All positions measured in inches
     'FIELD_BLU_C_START_POSITION_X': -248.625, # X-Coordinate of starting position C when on blue team
     'FIELD_BLU_C_START_POSITION_Y': -115.25, # -137.90, # Y-Coordinate of starting postion C when on blue team
     'FIELD_BLU_C_START_ANGLE': 180.0, # Heading angle of starting position C when on blue team
-    'ROBOT_FRAME_DIMENSION_X': 34.0, # X-coordinate length of robot frame
-    'ROBOT_FRAME_DIMENSION_Y': 26.0, # Y-coordinate length of robot frame
+    'ROBOT_FRAME_DIMENSION_X': 30.0, # X-coordinate length of robot frame  (2023: 34.0)
+    'ROBOT_FRAME_DIMENSION_Y': 30.0, # Y-coordinate length of robot frame  (2023: 26.0)
     'ROBOT_BUMPER_DIMENSION_X': 3.0, # Width of bumper (X-axis)
     'ROBOT_BUMPER_DIMENSION_Y': 3.0, # Width of bumper (Y-axis)
     'ROBOT_COF_OFFSET_X': 17.0, # X-offset of center of frame (assume half frame dimension)
