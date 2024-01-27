@@ -1105,6 +1105,9 @@ class SwerveDrive:
             newY = self.poseYFilter.calculate(self.vision.getPose()[1])
             self.swervometer.setCOF(newX, newY, self.getBearing())
 
+    def getModules(self):
+        return self.modules
+
     def idle(self):
         for key in self.modules:
             self.modules[key].idle()

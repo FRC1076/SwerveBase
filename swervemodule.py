@@ -258,7 +258,7 @@ class SwerveModule:
 
         #print("Angle: ", self.get_current_angle(), " Absolute Position: ", self.sd_prefix, " ", self.encoder.getAbsolutePosition(), self.encoder_zero, self.encoder.getAbsolutePosition() - self.encoder_zero)
 
-        self.newPosition = self.driveEncoder.getPosition() * 1.79
+        self.newPosition = self.driveEncoder.getPosition() * 1.79 #convert position to inches travelled by the wheel, I believe
         #print("FACTOR: ", self.driveEncoder.getPositionConversionFactor())
         self.positionChange = (self.newPosition - self.lastPosition) * self.positionSign
         #print("Position Change: ", self.positionChange, " New: ", self.newPosition, " Last: ", self.lastPosition, " Sign: ", self.positionSign)
@@ -280,6 +280,9 @@ class SwerveModule:
         print("Open Loop Ramp Rate: ", self.driveMotor.getOpenLoopRampRate())
         self.driveMotor.setClosedLoopRampRate(closedLoopRampRate)
         print("Closed Loop Ramp Rate: ", self.driveMotor.getClosedLoopRampRate())
+    
+    def getDriveEncoder(self):
+        return self.driveEncoder
 
     def update_smartdash(self):
         """

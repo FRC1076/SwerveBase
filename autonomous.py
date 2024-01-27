@@ -1,4 +1,5 @@
 import wpilib
+from dashboard import Dashboard
 class Autonomous:
 
     def __init__(self, config, team_is_red, field_start_position, drivetrain):
@@ -19,8 +20,10 @@ class Autonomous:
         self.autonHasStarted = False
         self.drivetrain = drivetrain
         self.lastTime = -1
+        self.dashboard = Dashboard.getDashboard()
 
     def executeAuton(self):
+        print(self.dashboard.getBoolean("ROBOT", "Team is Red", False))
         if not self.autonHasStarted:
             self.autonTimer.start()
 

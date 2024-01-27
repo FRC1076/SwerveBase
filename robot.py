@@ -153,7 +153,8 @@ class MyRobot(wpilib.TimedRobot):
         self.log("FIELD_START_POSITION:", config['FIELD_START_POSITION'])
 
         if (config['FIELD_START_POSITION'] == 'A'):
-            self.dashboard.putString(DASH_PREFIX, 'Field Start Position', 'A')
+            #self.dashboard.putString(DASH_PREFIX, 'Field Start Position', 'A')
+            self.dashboard.putStringArray(DASH_PREFIX, 'Field Start Position', ['A', 'B', 'C'])
             self.fieldStartPosition = 'A'
             if self.team_is_red:
                 starting_position_x = config['FIELD_RED_A_START_POSITION_X']
@@ -481,6 +482,9 @@ class MyRobot(wpilib.TimedRobot):
     #     return cliffDetector
 
     def robotPeriodic(self):
+        gyroAngle = self.drivetrain.getGyroAngle()
+        modules = self.drivetrain.getModules()
+        self.swervometer.updatePoseEstimator(gyroAngle, modules)
         #if self.cliffDetector:
         #    self.cliffDetector.update()
         return True

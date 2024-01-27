@@ -30,6 +30,11 @@ class Dashboard:
         if dashboardConfig[moduleName]:
             self.dashboard.putString(moduleName + '/' + key, value)
     
+    def putStringArray(self, moduleName, key, value):
+        if dashboardConfig[moduleName]:
+            self.dashboard.putString(moduleName + '/' + key, value)
+    
+    
     def putField(self, moduleName, key, value):
         #if dashboardConfig[moduleName]:
             #self.dashboard.putRaw(moduleName + '/' + key, value)
@@ -43,6 +48,9 @@ class Dashboard:
     
     def getString(self, moduleName, key, defaultValue = ''):
         return self.dashboard.getBoolean(moduleName + '/' + key, defaultValue)
+
+    def getValue(self, moduleName, key, defaultValue = -1):
+        return self.dashboard.getValue(moduleName + "/" + key, defaultValue)
     
     def getDashboard(testMode=False):
         if not Dashboard.theDashboard:
