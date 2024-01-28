@@ -1014,7 +1014,7 @@ class SwerveDrive:
             self.log("Module: Key: ", key)
             self.modules[key].execute()
         COFX, COFY, COFAngle = self.swervometer.calculateCOFPose(self.modules, self.getGyroAngle())
-        print(COFX, COFY, self.vision.getPose()[0], self.vision.getPose()[1])
+        #print(COFX, COFY, self.vision.getPose()[0], self.vision.getPose()[1])
         print(COFX, COFY)
         print("\n")
         #else:
