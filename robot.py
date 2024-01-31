@@ -53,7 +53,7 @@ DASH_PREFIX = MODULE_NAMES.ROBOT
 class MyRobot(wpilib.TimedRobot):
 
     def robotInit(self):
-
+        self.intakeMotor = rev.CANSparkMax(5, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
         self.drivetrain = None
         self.swervometer = None
         self.driver = None
@@ -98,7 +98,7 @@ class MyRobot(wpilib.TimedRobot):
 
         if self.drivetrain:
             self.drivetrain.resetGyro()
-            self.drivetrain.printGyro()
+            #self.drivetrain.printGyro()
 
         #self.elevator_has_reset = False
 
@@ -521,6 +521,10 @@ class MyRobot(wpilib.TimedRobot):
         #self.log("TeleopPeriodic: Elevator reset test complete")
         #print(self.vision.getPose()[0], self.vision.getPose()[1], self.vision.getPose()[2])
         self.drivetrain.visionPeriodic()
+        if(self.driver.xboxController.getBButton()):
+            self.intakeMotor.set(1)
+        else:
+            self.intakeMotor.set(0)
         if self.teleopDrivetrain():
             self.log("TeleoDrivetrain returned true. In a maneuver.")
             return
@@ -553,7 +557,7 @@ class MyRobot(wpilib.TimedRobot):
         # Note this is a bad idea in competition, since it's reset automatically in robotInit.
         if (driver.getLeftTriggerAxis() > 0.7 and driver.getRightTriggerAxis() > 0.7 and driver.getXButton()):
             self.drivetrain.resetGyro()
-            self.drivetrain.printGyro()
+            #self.drivetrain.printGyro()
 
         # Determine if Wheel Lock is needed.
         if (driver.getLeftTriggerAxis() > 0.7 and not driver.getRightTriggerAxis() > 0.7):

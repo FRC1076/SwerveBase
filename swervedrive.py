@@ -983,7 +983,7 @@ class SwerveDrive:
         Executes the doit in each wheel module.
         """
         self.update_smartdash()
-
+        #print(self.getGyroAngle())
         self.log("Swervedrive: Execute: axis_of_rotation: ", axis_of_rotation)
 
         if axis_of_rotation == 'center':
@@ -1015,8 +1015,8 @@ class SwerveDrive:
             self.modules[key].execute()
         COFX, COFY, COFAngle = self.swervometer.calculateCOFPose(self.modules, self.getGyroAngle())
         #print(COFX, COFY, self.vision.getPose()[0], self.vision.getPose()[1])
-        print(COFX, COFY)
-        print("\n")
+        #print(COFX, COFY)
+        #print("\n")
         #else:
         #print(COFX, COFY)
         """
