@@ -140,13 +140,13 @@ class MyRobot(wpilib.TimedRobot):
         if (config['TEAM_IS_RED']):
             self.team_is_red = True
             self.team_is_blu = False
-            teamGyroAdjustment = 180 # Red Team faces 180 degrees at start.
-            teamMoveAdjustment = 1 # Red Team start is oriented in the same direction as field.
+            teamGyroAdjustment = 0 # Red Team faces 180 degrees at start.
+            teamMoveAdjustment = -1 # Red Team start is oriented in the same direction as field.
         else:
             self.team_is_red = False
             self.team_is_blu = True
-            teamGyroAdjustment = 0 # Blue Team faces 0 degrees at start.
-            teamMoveAdjustment = -1 # Blue Team start is oriented 180 degrees from field.
+            teamGyroAdjustment = 180 # Blue Team faces 0 degrees at start.
+            teamMoveAdjustment = 1 # Blue Team start is oriented 180 degrees from field.
 
         self.dashboard.putBoolean(DASH_PREFIX, 'Team is Red', self.team_is_red)
 
@@ -256,10 +256,10 @@ class MyRobot(wpilib.TimedRobot):
             target_offsetX_april=config['APRIL_TARGET_OFFSET_X'], target_target_size_april=config['APRIL_TARGET_TARGET_SIZE'],
             max_target_offset_x=config['MAX_TARGET_OFFSET_X'], min_target_size=config['MIN_TARGET_SIZE'])
     
-        flModule_cfg = ModuleConfig(sd_prefix='FrontLeft_Module', zero=125.4 + 90, inverted=False, allow_reverse=True, position_conversion=config['ROBOT_INCHES_PER_ROTATION'], heading_kP=config['HEADING_KP'], heading_kI=config['HEADING_KI'], heading_kD=config['HEADING_KD'])
-        frModule_cfg = ModuleConfig(sd_prefix='FrontRight_Module', zero=293.6 + 90, inverted=False, allow_reverse=True, position_conversion=config['ROBOT_INCHES_PER_ROTATION'], heading_kP=config['HEADING_KP'], heading_kI=config['HEADING_KI'], heading_kD=config['HEADING_KD'])
-        rlModule_cfg = ModuleConfig(sd_prefix='RearLeft_Module', zero=272.5 + 90, inverted=True, allow_reverse=True, position_conversion=config['ROBOT_INCHES_PER_ROTATION'], heading_kP=config['HEADING_KP'], heading_kI=config['HEADING_KI'], heading_kD=config['HEADING_KD'])
-        rrModule_cfg = ModuleConfig(sd_prefix='RearRight_Module', zero=307.5 + 90, inverted=True, allow_reverse=True, position_conversion=config['ROBOT_INCHES_PER_ROTATION'], heading_kP=config['HEADING_KP'], heading_kI=config['HEADING_KI'], heading_kD=config['HEADING_KD'])
+        flModule_cfg = ModuleConfig(sd_prefix='FrontLeft_Module', zero=125.4 + 90, inverted=True, allow_reverse=True, position_conversion=config['ROBOT_INCHES_PER_ROTATION'], heading_kP=config['HEADING_KP'], heading_kI=config['HEADING_KI'], heading_kD=config['HEADING_KD'])
+        frModule_cfg = ModuleConfig(sd_prefix='FrontRight_Module', zero=293.6 + 90, inverted=True, allow_reverse=True, position_conversion=config['ROBOT_INCHES_PER_ROTATION'], heading_kP=config['HEADING_KP'], heading_kI=config['HEADING_KI'], heading_kD=config['HEADING_KD'])
+        rlModule_cfg = ModuleConfig(sd_prefix='RearLeft_Module', zero=272.5 + 90, inverted=False, allow_reverse=True, position_conversion=config['ROBOT_INCHES_PER_ROTATION'], heading_kP=config['HEADING_KP'], heading_kI=config['HEADING_KI'], heading_kD=config['HEADING_KD'])
+        rrModule_cfg = ModuleConfig(sd_prefix='RearRight_Module', zero=307.5 + 90, inverted=False, allow_reverse=True, position_conversion=config['ROBOT_INCHES_PER_ROTATION'], heading_kP=config['HEADING_KP'], heading_kI=config['HEADING_KI'], heading_kD=config['HEADING_KD'])
         
         motor_type = rev.CANSparkMaxLowLevel.MotorType.kBrushless
 
@@ -650,7 +650,7 @@ class MyRobot(wpilib.TimedRobot):
             
             # If any joysticks are dictating movement.
             if fwd != 0 or strafe != 0 or rcw != 0:
-                self.drivetrain.move(fwd, strafe, -rcw, self.drivetrain.getBearing())
+                self.drivetrain.move(fwd, strafe, rcw, self.drivetrain.getBearing())
                 
                 self.log("TeleopDriveTrain: POV: ", driver.getPOV())
                 if self.getPOVCorner(driver.getPOV()) == 'front_left':
@@ -711,6 +711,7 @@ class MyRobot(wpilib.TimedRobot):
     def autonomousPeriodic(self):
          self.auton.executeAuton()
          self.drivetrain.visionPeriodic()
+         self.intakeMotor.set(1)
          return False
     """
     def autonomousPeriodic(self):
