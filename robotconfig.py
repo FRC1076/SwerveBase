@@ -162,7 +162,7 @@ autonConfig = {
     'DO_COMMUNITY': False, # Only applies for position B
     'AUTON_OPEN_LOOP_RAMP_RATE': 1, # Improves the quality of swervometery by avoiding slippage.
     'AUTON_CLOSED_LOOP_RAMP_RATE': 0,
-    'TASK_RED_A': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 180, 57, 180], ['WAIT', 2], ['MOVE', 294, 57, 180], ['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 180, 111, 180], ['WAIT', 2], ['MOVE', 294, 57, 180]] #,['MOVE', 91.9375, -40.15, 180]]
+    'TASK_RED_A': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 180, 57, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 180, 111, 0], ['WAIT', 2], ['MOVE', 294, 57, 0]] #,['MOVE', 91.9375, -40.15, 180]]
     # 'TASK_BLU_A_TF': [['CLAW_INTAKE_AND_STOP'],
     #                     ['POSITION_GRABBER', 2],
     #                     ['ELEVATOR_DOWN'],
