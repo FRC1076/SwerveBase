@@ -147,3 +147,5 @@ class Vision:
         return aspectRatio > self.minTargetAspectRatioAprilTag \
             and aspectRatio < self.maxTargetAspectRatioAprilTag
     
+    def getTotalLatency(self):
+        return self.table.getNumber('tl', 0) + self.table.getNumber('cl', 0)

@@ -7,6 +7,7 @@ from datetime import datetime
 import wpilib
 import wpilib.drive
 import wpimath.controller
+from wpimath.geometry import Pose2d
 from wpilib import interfaces
 import rev
 import ctre
@@ -99,6 +100,8 @@ class MyRobot(wpilib.TimedRobot):
         if self.drivetrain:
             self.drivetrain.resetGyro()
             self.drivetrain.printGyro()
+        
+        self.swervometer.startTimer()
 
         #self.elevator_has_reset = False
 
@@ -485,6 +488,8 @@ class MyRobot(wpilib.TimedRobot):
         gyroAngle = self.drivetrain.getGyroAngle()
         modules = self.drivetrain.getModules()
         self.swervometer.updatePoseEstimator(gyroAngle, modules)
+        #if(self.vision.hasTargets()):
+            #self.swervometer.poseEstimator.addVisionMeasurement(Pose2d(self.vision.getPose()[0], self.vision.getPose()[1]), self.swervometer.getTimer() - self.vision.getTotalLatency() / 1000)
         #if self.cliffDetector:
         #    self.cliffDetector.update()
         return True
