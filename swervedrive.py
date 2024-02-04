@@ -530,6 +530,12 @@ class SwerveDrive:
             self.set_rcw(self.steerStraight(rcw, bearing))
         else:
             self.set_rcw(rcw)
+    
+    def relativeMove(self, base_fwd, base_strafe, rcw, bearing):
+        self.set_fwd(clamp(base_strafe))
+        self.set_strafe(clamp(base_fwd))
+        self.set_rcw(clamp(rcw))
+        self.execute('center')
 
     def goToOffsetAndTargetSize(self, targetErrorX, targetTargetSize):
         if self.vision:

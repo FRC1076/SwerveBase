@@ -646,7 +646,10 @@ class MyRobot(wpilib.TimedRobot):
             
             # If any joysticks are dictating movement.
             if fwd != 0 or strafe != 0 or rcw != 0:
-                self.drivetrain.move(fwd, strafe, rcw, self.drivetrain.getBearing())
+                if self.driver.xboxController.getRightTriggerAxis() > 0.7:
+                    self.drivetrain.relativeMove(fwd, strafe, rcw, self.drivetrain.getBearing())
+                else:
+                    self.drivetrain.move(fwd, strafe, rcw, self.drivetrain.getBearing())
                 
                 self.log("TeleopDriveTrain: POV: ", driver.getPOV())
                 if self.getPOVCorner(driver.getPOV()) == 'front_left':
