@@ -102,6 +102,7 @@ class MyRobot(wpilib.TimedRobot):
             self.drivetrain.printGyro()
         
         self.swervometer.startTimer()
+        self.swervometer.initPoseEstimator(self.drivetrain.getModules())
 
         #self.elevator_has_reset = False
 

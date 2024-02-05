@@ -49,15 +49,6 @@ class Swervometer:
         self.com_offset_y = self.robotProperty.com_offset_y
         print("init current X: ", self.currentX, " init current y: ", self.currentY, " init current bearing: ", self.currentBearing)
 
-        #will be in inches
-        kinematics = SwerveDrive4Kinematics(Translation2d(self.swerveModuleOffsetX, self.swerveModuleOffsetY),
-                                                 Translation2d(self.swerveModuleOffsetX, -self.swerveModuleOffsetY),
-                                                 Translation2d(-self.swerveModuleOffsetX, self.swerveModuleOffsetY),
-                                                 Translation2d(-self.swerveModuleOffsetX, -self.swerveModuleOffsetY))
-        gyroAngle = Rotation2d(self.teamGyroAdjustment * math.pi / 180)
-        swerveModules = (SwerveModulePosition(0, Rotation2d()), SwerveModulePosition(0, Rotation2d()), SwerveModulePosition(0, Rotation2d()), SwerveModulePosition(0, Rotation2d()))
-        self.poseEstimator =  SwerveDrive4PoseEstimator(kinematics, gyroAngle, swerveModules, Pose2d(self.currentX, self.currentY, self.teamGyroAdjustment * math.pi / 180))
-
         self.calcLeverArmLengths()
 
     def startTimer(self):
@@ -205,6 +196,42 @@ class Swervometer:
         
         return self.currentX, self.currentY, self.currentBearing
    
+    def initPoseEstimator(self, modules):
+        frontLeftModule = None
+        frontRightModule = None
+        rearLeftModule = None
+        rearRightModule = None
+        for key in modules:
+            # positionChange is the amount the wheel moved forward
+            position = modules[key].driveEncoder.getPosition() * 1.79 * self.teamMoveAdjustment
+            # wheelAngle is the angle of the module wheel relative to the frame of the bot
+            #wheelAngle = (modules[key].newAngle - 90) % 360 # The -90 is because the orientation of the swervemodules seems to be negative 90 degrees off from the orientation of the bot.
+            try:
+                wheelAngle = (modules[key].newAngle - 90) % 360
+            except:
+                wheelAngle = 0
+            # Each of these calculations is different because positionChange, newAngle, and psi are different for each corner
+            if (key == 'front_right'):
+                frontRightModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+
+                #print("fr: pc: ", positionChange, " psi: ", frontRightPsi, " bot angle: ", currentGyroAngle, " wheel angle: ", wheelAngle, "frx: ", frontRightXCoordinate, "fry: ", frontRightYCoordinate)
+            elif (key == 'rear_right'):
+                rearRightModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+                #print("rr: pc: ", positionChange, " psi: ", rearRightPsi, " bot angle: ", currentGyroAngle, " wheel angle: ", wheelAngle, "rrx: ", rearRightXCoordinate, "rry: ", rearRightYCoordinate)
+            elif (key == 'rear_left'):
+                rearLeftModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+                #print("rl: pc: ", positionChange, " psi: ", rearLeftPsi, " bot angle: ", currentGyroAngle, " wheel angle: ", wheelAngle, "rlx: ", rearLeftXCoordinate, "rly: ", rearLeftYCoordinate)
+            else: # (key == 'front_left'):
+                frontLeftModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+        #will be in inches
+        kinematics = SwerveDrive4Kinematics(Translation2d(self.swerveModuleOffsetX, self.swerveModuleOffsetY),
+                                                 Translation2d(self.swerveModuleOffsetX, -self.swerveModuleOffsetY),
+                                                 Translation2d(-self.swerveModuleOffsetX, self.swerveModuleOffsetY),
+                                                 Translation2d(-self.swerveModuleOffsetX, -self.swerveModuleOffsetY))
+        gyroAngle = Rotation2d(self.teamGyroAdjustment * math.pi / 180)
+        swerveModules = (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule)
+        self.poseEstimator =  SwerveDrive4PoseEstimator(kinematics, gyroAngle, swerveModules, Pose2d(self.currentX, self.currentY, self.teamGyroAdjustment * math.pi / 180))
+
     def updatePoseEstimator(self, gyroAngle, modules):
         frontLeftModule = None
         frontRightModule = None
