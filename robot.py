@@ -642,6 +642,12 @@ class MyRobot(wpilib.TimedRobot):
             fwd *= self.swervometer.getTeamMoveAdjustment()
             strafe *= self.swervometer.getTeamMoveAdjustment()
 
+            if driver.getBButton():
+                self.drivetrain.move(fwd, strafe, 0 , self.drivetrain.getBearing())
+                self.drivetrain.pointToPose(248.625, 16.75)
+                self.drivetrain.execute('center')
+                return
+
             # No need to correct RCW, as clockwise is clockwise whether you are facing with or against bot.
             
             # If any joysticks are dictating movement.

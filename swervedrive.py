@@ -1082,6 +1082,28 @@ class SwerveDrive:
         else:
             self.set_rcw(0)
             self.execute('center')
+
+    def pointToPose(self, x, y):
+        currentX, currentY, currentR = self.swervometer.getCOF()
+        #print(y - currentY, x - currentX)
+        try:
+            #oliver = self.getGyroAngle() - math.atan((y - currentY)/(x - currentX)) * 180/math.pi
+            desiredAngle = (math.atan2((y - currentY), (x - currentX)) * 180/math.pi)
+            #print(self.getGyroAngle() - math.atan((y - currentY)/(x - currentX)) * 180/math.pi)
+            #print(math.atan(-(y - currentY)/(x - currentX)) * 180/math.pi)
+            print(y, currentY, x, currentX)
+            print(desiredAngle)
+            angleMove = self.bearing_pid_controller.calculate(self.getGyroAngle(), desiredAngle + 180)
+            #print(math.atan2(-(y - currentY), (x - currentX)) * 180/math.pi)
+            #print("Gyro", self.getGyroAngle())
+            #print(angleMove)
+            #print(-clamp(angleMove))
+            self.set_rcw(clamp(angleMove))
+        except:
+            pass
+        #print(self.getGyroAngle())
+
+        return
     
     def updateFilter(self):
         if(self.vision.hasTargets()):
