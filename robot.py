@@ -54,6 +54,10 @@ class MyRobot(wpilib.TimedRobot):
 
     def robotInit(self):
         self.intakeMotor = rev.CANSparkMax(5, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
+        self.leftShootingMotor = rev.CANSparkMax(8, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
+        self.rightShootingMtor = rev.CANSparkMax(28, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
+        self.indexMotor = rev.CANSparkMax(17, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
+
         self.drivetrain = None
         self.swervometer = None
         self.driver = None
@@ -521,10 +525,28 @@ class MyRobot(wpilib.TimedRobot):
         #self.log("TeleopPeriodic: Elevator reset test complete")
         #print(self.vision.getPose()[0], self.vision.getPose()[1], self.vision.getPose()[2])
         self.drivetrain.visionPeriodic()
-        if(self.driver.xboxController.getBButton()):
+        if self.driver.xboxController.getBButton():
             self.intakeMotor.set(1)
         else:
             self.intakeMotor.set(0)
+
+        if self.operator.xboxController.getAButton():
+            self.leftShootingMotor.set(0.6)
+            self.rightShootingMotor.set(-1.0)
+        else:
+            self.leftShootingMotor.set(0)
+            self.rightShootingMotor.set(0)
+
+        if self.operator.xboxController.getRightTriggerAxis() >= 0.5:
+            self.indexMotor.set(0.5)
+        elif self.operator.xboxController.getLeftTriggerAxis() >= 0.5:
+            self.indexMotor.set(0.5)
+        else:
+            self.indexMotor.set(0)
+
+        
+
+
         if self.teleopDrivetrain():
             self.log("TeleoDrivetrain returned true. In a maneuver.")
             return
