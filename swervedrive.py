@@ -1088,12 +1088,12 @@ class SwerveDrive:
         #print(y - currentY, x - currentX)
         try:
             #oliver = self.getGyroAngle() - math.atan((y - currentY)/(x - currentX)) * 180/math.pi
-            desiredAngle = (math.atan2((y - currentY), (x - currentX)) * 180/math.pi)
+            desiredAngle = 180 - math.atan2((currentY - y), (currentX - x)) * 180/math.pi
             #print(self.getGyroAngle() - math.atan((y - currentY)/(x - currentX)) * 180/math.pi)
             #print(math.atan(-(y - currentY)/(x - currentX)) * 180/math.pi)
             print(y, currentY, x, currentX)
             print(desiredAngle)
-            angleMove = self.bearing_pid_controller.calculate(self.getGyroAngle(), desiredAngle + 180)
+            angleMove = self.bearing_pid_controller.calculate(self.getGyroAngle(), desiredAngle)
             #print(math.atan2(-(y - currentY), (x - currentX)) * 180/math.pi)
             #print("Gyro", self.getGyroAngle())
             #print(angleMove)
