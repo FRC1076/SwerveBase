@@ -55,7 +55,7 @@ class MyRobot(wpilib.TimedRobot):
     def robotInit(self):
         self.intakeMotor = rev.CANSparkMax(5, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
         self.leftShootingMotor = rev.CANSparkMax(8, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
-        self.rightShootingMtor = rev.CANSparkMax(28, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
+        self.rightShootingMotor = rev.CANSparkMax(28, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
         self.indexMotor = rev.CANSparkMax(17, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
 
         self.drivetrain = None
@@ -531,15 +531,22 @@ class MyRobot(wpilib.TimedRobot):
             self.intakeMotor.set(0)
 
         if self.operator.xboxController.getAButton():
-            self.leftShootingMotor.set(0.6)
-            self.rightShootingMotor.set(-1.0)
+            self.leftShootingMotor.set(-0.6)
+            self.rightShootingMotor.set(1.0)
+        elif self.operator.xboxController.getRightBumper():
+            self.leftShootingMotor.set(-0.1)
+            self.rightShootingMotor.set(0.1)
         else:
             self.leftShootingMotor.set(0)
             self.rightShootingMotor.set(0)
 
+        print("{}".format("*"*(int(10*self.indexMotor.getOutputCurrent()/4)),))
+
         if self.operator.xboxController.getRightTriggerAxis() >= 0.5:
-            self.indexMotor.set(0.5)
+            self.indexMotor.set(-0.5)
         elif self.operator.xboxController.getLeftTriggerAxis() >= 0.5:
+            self.indexMotor.set(0.5)
+        elif self.operator.xboxController.getLeftBumperReleased():
             self.indexMotor.set(0.5)
         else:
             self.indexMotor.set(0)
