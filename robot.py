@@ -59,6 +59,9 @@ class MyRobot(wpilib.TimedRobot):
         self.rightShootingMotor = rev.CANSparkMax(28, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
         self.rightShootingMotor.enableVoltageCompensation(12)
         self.indexMotor = rev.CANSparkMax(61, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
+        self.leftSprocketMotor = rev.CANSparkMax(0, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
+        self.rightSprocketMotor = rev.CANSparkMax(0, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
+        
 
         self.drivetrain = None
         self.swervometer = None
