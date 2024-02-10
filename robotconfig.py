@@ -34,7 +34,7 @@ swervometerConfig = { # All positions measured in inches
     'FIELD_ORIGIN_Y': 0.0, # Y-Coordinate of field orgin (center of field, viewed from scoring table)
     'FIELD_RED_A_START_POSITION_X': 294, #values of 2024 on left #248.625, #159.0, # X-Coordinate of starting position A when on red team
     'FIELD_RED_A_START_POSITION_Y': 57, #values of 2024 on left #16.75, #40.15, #54.25, # Y-Coordinate of starting postion A when on red team
-    'FIELD_RED_A_START_ANGLE': 0, # Heading angle of starting position A when on red team
+    'FIELD_RED_A_START_ANGLE': 180, # Heading angle of starting position A when on red team
     'FIELD_RED_B_START_POSITION_X': 248.625, # X-Coordinate of starting position B when on red team
     'FIELD_RED_B_START_POSITION_Y': -49.25, #-28.25, # Y-Coordinate of starting postion B when on red team
     'FIELD_RED_B_START_ANGLE': 0.0, # Heading angle of starting position B when on red team

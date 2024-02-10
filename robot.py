@@ -55,8 +55,10 @@ class MyRobot(wpilib.TimedRobot):
     def robotInit(self):
         self.intakeMotor = rev.CANSparkMax(5, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
         self.leftShootingMotor = rev.CANSparkMax(8, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
+        self.leftShootingMotor.enableVoltageCompensation(12)
         self.rightShootingMotor = rev.CANSparkMax(28, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
-        self.indexMotor = rev.CANSparkMax(17, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
+        self.rightShootingMotor.enableVoltageCompensation(12)
+        self.indexMotor = rev.CANSparkMax(61, rev.CANSparkMaxLowLevel.MotorType.kBrushless)
 
         self.drivetrain = None
         self.swervometer = None
@@ -145,13 +147,12 @@ class MyRobot(wpilib.TimedRobot):
             self.team_is_red = True
             self.team_is_blu = False
             teamGyroAdjustment = 0 # Red Team faces 180 degrees at start.
-            teamMoveAdjustment = -1 # Red Team start is oriented in the same direction as field.
+            teamMoveAdjustment = 1 # Red Team start is oriented in the same direction as field.
         else:
             self.team_is_red = False
             self.team_is_blu = True
             teamGyroAdjustment = 180 # Blue Team faces 0 degrees at start.
-            teamMoveAdjustment = 1 # Blue Team start is oriented 180 degrees from field.
-
+            teamMoveAdjustment = -1 # Blue Team start is oriented 180 degrees from field.
         self.dashboard.putBoolean(DASH_PREFIX, 'Team is Red', self.team_is_red)
 
         self.log("FIELD_START_POSITION:", config['FIELD_START_POSITION'])
@@ -540,12 +541,12 @@ class MyRobot(wpilib.TimedRobot):
             self.leftShootingMotor.set(0)
             self.rightShootingMotor.set(0)
 
-        print("{}".format("*"*(int(10*self.indexMotor.getOutputCurrent()/4)),))
+        #print("{}".format("*"*(int(10*self.indexMotor.getOutputCurrent()/4)),))
 
         if self.operator.xboxController.getRightTriggerAxis() >= 0.5:
-            self.indexMotor.set(-0.5)
-        elif self.operator.xboxController.getLeftTriggerAxis() >= 0.5:
             self.indexMotor.set(0.5)
+        elif self.operator.xboxController.getLeftTriggerAxis() >= 0.5:
+            self.indexMotor.set(-0.5)
         elif self.operator.xboxController.getLeftBumperReleased():
             self.indexMotor.set(0.5)
         else:
