@@ -452,7 +452,7 @@ class SwerveDrive:
     #     self.log('Balance yaw output', yaw_output)
     #     self.move(yawSign * pitch_output, 0.0, yaw_output, self.bearing)
         
-    #     self.update_smartdash()
+    #     ##self.update_smartdash()
 
     #     self.execute('center')
 
@@ -572,18 +572,18 @@ class SwerveDrive:
             if self.visionDrive_x_pid_controller.atSetpoint():
                 if self.visionDrive_y_pid_controller.atSetpoint():
                     self.idle()
-                    self.update_smartdash()
+                    ##self.update_smartdash()
                     return True
                 else:
                     self.move(0, y_error, 0, self.bearing)
                     self.execute('center')
-                    self.update_smartdash()
+                    ##self.update_smartdash()
                     return False
             else:
                 #self.move(x_error, y_error, 0, YAW)
                 self.move(x_error, 0, 0, self.bearing)
                 self.execute('center')
-                self.update_smartdash()
+                ##self.update_smartdash()
                 return False
 
     def vision_drive_clamp(self, num, min_value, max_value):
@@ -686,12 +686,12 @@ class SwerveDrive:
         currentX, currentY, currentBearing = self.swervometer.getCOF()
         
         if self.target_x_pid_controller.atSetpoint() and self.target_y_pid_controller.atSetpoint(): 
-            self.update_smartdash()
+            ##self.update_smartdash()
             return True
         else:
             self.move(x_error, y_error, 0, bearing)
             
-            self.update_smartdash()
+            ##self.update_smartdash()
             self.execute('center')
             # self.log("xPositionError: ", self.target_x_pid_controller.getPositionError(), "yPositionError: ", self.target_y_pid_controller.getPositionError(), "rcwPositionError: ", self.target_rcw_pid_controller.getPositionError())
             # self.log("xPositionTolerance: ", self.target_x_pid_controller.getPositionTolerance(), "yPositionTolerance: ", self.target_y_pid_controller.getPositionTolerance(), "rcwPositionTolerance: ", self.target_rcw_pid_controller.getPositionTolerance())
@@ -982,7 +982,7 @@ class SwerveDrive:
         Sends the speeds and angles to each corresponding wheel module.
         Executes the doit in each wheel module.
         """
-        self.update_smartdash()
+        ##self.update_smartdash()
 
         self.log("Swervedrive: Execute: axis_of_rotation: ", axis_of_rotation)
 
