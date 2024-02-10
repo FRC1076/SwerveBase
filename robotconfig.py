@@ -41,8 +41,8 @@ swervometerConfig = { # All positions measured in inches
     'FIELD_RED_C_START_POSITION_X': 248.625, # X-Coordinate of starting position C when on red team
     'FIELD_RED_C_START_POSITION_Y': -115.25, #-137.90, # Y-Coordinate of starting postion C when on red team
     'FIELD_RED_C_START_ANGLE': 0.0, # Heading angle of starting position C when on red team
-    'FIELD_BLU_A_START_POSITION_X': -248.625, # X-Coordinate of starting position A when on blue team
-    'FIELD_BLU_A_START_POSITION_Y': 16.75, # 40.15, # Y-Coordinate of starting postion A when on blue team
+    'FIELD_BLU_A_START_POSITION_X': -270.53, # X-Coordinate of starting position A when on blue team
+    'FIELD_BLU_A_START_POSITION_Y': 57, # 40.15, # Y-Coordinate of starting postion A when on blue team
     'FIELD_BLU_A_START_ANGLE': 180.0, # Heading angle of starting position A when on blue team
     'FIELD_BLU_B_START_POSITION_X': -248.625, # X-Coordinate of starting position B when on blue team
     'FIELD_BLU_B_START_POSITION_Y': -49.25, #-28.25, # Y-Coordinate of starting postion B when on blue team
@@ -162,7 +162,7 @@ autonConfig = {
     'DO_COMMUNITY': False, # Only applies for position B
     'AUTON_OPEN_LOOP_RAMP_RATE': 1, # Improves the quality of swervometery by avoiding slippage.
     'AUTON_CLOSED_LOOP_RAMP_RATE': 0,
-    'TASK_RED_A': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 180, 57, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 180, 111, 0], ['WAIT', 2], ['MOVE', 294, 57, 0]] #,['MOVE', 91.9375, -40.15, 180]]
+    'TASK_RED_A': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 230.5, 57, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 262.25, 114, 0], ['WAIT', 2], ['MOVE', 294, 114, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['MOVE', 262.25, 0, 0], ['MOVE', 230.5, 0, 0], ['WAIT', 2], ['MOVE', 294, 57, 0]] #,['MOVE', 91.9375, -40.15, 180]]
     # 'TASK_BLU_A_TF': [['CLAW_INTAKE_AND_STOP'],
     #                     ['POSITION_GRABBER', 2],
     #                     ['ELEVATOR_DOWN'],
@@ -386,6 +386,29 @@ autonConfig = {
     #                     ['MOVE', 91.9375, -137.90, 180]],
     
 }
+noteConfig = {
+    #RED TEAM
+    'NOTE 1': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 230.5, 57, 0]]
+    'NOTE 2': [['WAIT,2'], ['UPDATE_POSE'], ['MOVE', 262.25, 114, 0], ['WAIT', 2], ['MOVE', 294, 114, 0]]
+    'NOTE 3': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 262.25, 0, 0], ['MOVE', 230.5, 0, 0]]
+    'NOTE 4': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, -75, 0], ['MOVE', 19.9, -75, 0] ]
+    'NOTE 5': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, -34.31, 0],['MOVE', 19.9, -9, 0]]
+    'NOTE 6 NEGATIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, -34.31, 0], ['MOVE', 19.9, 57, 0]]
+    'NOTE 6 POSITIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, 148.31, 0], ['MOVE', 19.9, 57,0]]
+    'NOTE 7': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, 148.31, 0], ['MOVE', 19.9, 123, 0]] 
+    'NOTE 8': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, 189, 0], ['MOVE', 19.9, 189, 0]]
+    #BLUE TEAM
+    'NOTE 9': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -207.03, 57, 180]]
+    'NOTE 10': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -216.875, 114, 180], ['MOVE', -207.03, 114, 180]]
+    'NOTE 11': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -216.875, 0, 180], ['MOVE', -207.03, 0, 180]]
+    'NOTE 12': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, -75, 180], ['MOVE', 19.9, -75, 180]]
+    'NOTE 13': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, -34.31, 180], ['MOVE', 19.9, -9, 180]]
+    'NOTE 14 NEGATIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, -34.41, 180], ['MOVE', 19.9, 57, 180]]
+    'NOTE 14 POSITIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, 148.31, 180], ['MOVE', 19.9, 57, 180]]
+    'NOTE 15': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, 148.31, 180], ['MOVE', 19.9, 123, 180]]
+    'NOTE 16': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, 189, 180], ['MOVE', 19.9, 189, 180]] 
+}
+
 
 #MODULE NAMES
 MODULE_NAMES = namedtuple('MODULE_NAMES', [
