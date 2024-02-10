@@ -388,24 +388,24 @@ autonConfig = {
 }
 noteConfig = {
     #RED TEAM
-    'NOTE 1': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 230.5, 57, 0]]
-    'NOTE 2': [['WAIT,2'], ['UPDATE_POSE'], ['MOVE', 262.25, 114, 0], ['WAIT', 2], ['MOVE', 294, 114, 0]]
-    'NOTE 3': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 262.25, 0, 0], ['MOVE', 230.5, 0, 0]]
-    'NOTE 4': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, -75, 0], ['MOVE', 19.9, -75, 0] ]
-    'NOTE 5': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, -34.31, 0],['MOVE', 19.9, -9, 0]]
-    'NOTE 6 NEGATIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, -34.31, 0], ['MOVE', 19.9, 57, 0]]
-    'NOTE 6 POSITIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, 148.31, 0], ['MOVE', 19.9, 57,0]]
-    'NOTE 7': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, 148.31, 0], ['MOVE', 19.9, 123, 0]] 
-    'NOTE 8': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, 189, 0], ['MOVE', 19.9, 189, 0]]
+    'NOTE 1': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 230.5, 57, 0]],
+    'NOTE 2': [['WAIT,2'], ['UPDATE_POSE'], ['MOVE', 262.25, 114, 0], ['WAIT', 2], ['MOVE', 294, 114, 0]],
+    'NOTE 3': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 262.25, 0, 0], ['MOVE', 230.5, 0, 0]],
+    'NOTE 4': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, -75, 0], ['MOVE', 19.9, -75, 0] ],
+    'NOTE 5': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, -34.31, 0],['MOVE', 19.9, -9, 0]],
+    'NOTE 6 NEGATIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, -34.31, 0], ['MOVE', 19.9, 57, 0]],
+    'NOTE 6 POSITIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, 148.31, 0], ['MOVE', 19.9, 57,0]],
+    'NOTE 7': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, 148.31, 0], ['MOVE', 19.9, 123, 0]],
+    'NOTE 8': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 115.31, 189, 0], ['MOVE', 19.9, 189, 0]],
     #BLUE TEAM
-    'NOTE 9': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -207.03, 57, 180]]
-    'NOTE 10': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -216.875, 114, 180], ['MOVE', -207.03, 114, 180]]
-    'NOTE 11': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -216.875, 0, 180], ['MOVE', -207.03, 0, 180]]
-    'NOTE 12': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, -75, 180], ['MOVE', 19.9, -75, 180]]
-    'NOTE 13': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, -34.31, 180], ['MOVE', 19.9, -9, 180]]
-    'NOTE 14 NEGATIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, -34.41, 180], ['MOVE', 19.9, 57, 180]]
-    'NOTE 14 POSITIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, 148.31, 180], ['MOVE', 19.9, 57, 180]]
-    'NOTE 15': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, 148.31, 180], ['MOVE', 19.9, 123, 180]]
+    'NOTE 9': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -207.03, 57, 180]],
+    'NOTE 10': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -216.875, 114, 180], ['MOVE', -207.03, 114, 180]],
+    'NOTE 11': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -216.875, 0, 180], ['MOVE', -207.03, 0, 180]],
+    'NOTE 12': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, -75, 180], ['MOVE', 19.9, -75, 180]],
+    'NOTE 13': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, -34.31, 180], ['MOVE', 19.9, -9, 180]],
+    'NOTE 14 NEGATIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, -34.41, 180], ['MOVE', 19.9, 57, 180]],
+    'NOTE 14 POSITIVE': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, 148.31, 180], ['MOVE', 19.9, 57, 180]],
+    'NOTE 15': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, 148.31, 180], ['MOVE', 19.9, 123, 180]],
     'NOTE 16': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', -91.84, 189, 180], ['MOVE', 19.9, 189, 180]] 
 }
 
