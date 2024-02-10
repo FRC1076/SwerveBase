@@ -180,6 +180,8 @@ class SwerveDrive:
         #self.visionRotationFilter = LinearFilter([], []).singlePoleIIR(0.1, 0.02)
         self.visionRotationFilter = LinearFilter([], []).movingAverage(5)
         self.filteredValues = 0
+        self.poseXFilter = LinearFilter([], []).movingAverage(5)
+        self.poseYFilter = LinearFilter([], []).movingAverage(5)
         self.reflectivetargetErrorX = self.visionDrive_config.target_offsetX_reflective
         self.reflectiveTargetTargetSize = self.visionDrive_config.target_target_size_reflective
         self.apriltargetErrorX = self.visionDrive_config.target_offsetX_april
@@ -981,7 +983,7 @@ class SwerveDrive:
         Executes the doit in each wheel module.
         """
         self.update_smartdash()
-
+        #print(self.getGyroAngle())
         self.log("Swervedrive: Execute: axis_of_rotation: ", axis_of_rotation)
 
         if axis_of_rotation == 'center':
@@ -1011,9 +1013,13 @@ class SwerveDrive:
         for key in self.modules:
             self.log("Module: Key: ", key)
             self.modules[key].execute()
-
         COFX, COFY, COFAngle = self.swervometer.calculateCOFPose(self.modules, self.getGyroAngle())
-
+        #print(COFX, COFY, self.vision.getPose()[0], self.vision.getPose()[1])
+        #print(COFX, COFY)
+        #print("\n")
+        #else:
+        #print(COFX, COFY)
+        """
         if self.vision:
             self.log("Vision started")
             if self.vision.canUpdatePose():
@@ -1022,13 +1028,13 @@ class SwerveDrive:
                 orientation = self.vision.getOrientation()
                 if self.vision.shouldUpdatePose():
                     if pose[0] != -1:
-                        self.swervometer.setCOF(pose[0], pose[1], orientation[2])
+                        #self.swervometer.setCOF(pose[0], pose[1], orientation[2])
                         self.log("Vision updated position: (" + str(pose[0]) + ", " + str(pose[1]) + ") with rotation of " + str(orientation[2]) + " degrees.")
                     else:
                         self.log("Vision should have updated position, but pose was empty.")
                 else:
                     self.log("Vision reports position: (" + str(pose[0]) + ", " + str(pose[1]) + ") with rotation of " + str(orientation[2]) + " degrees.")
-                self.log("AFTER COMMENTS")
+                self.log("AFTER COMMENTS")"""
 
         self.log("COFX: ", COFX, ", COFY: ", COFY, ", COF Angle: ", COFAngle)
 
@@ -1083,13 +1089,21 @@ class SwerveDrive:
             self.set_rcw(0)
             self.execute('center')
     
-    def updateFilter(self):
+    def visionPeriodic(self):
         if(self.vision.hasTargets()):
             targetErrorAngle = self.vision.getTargetPoseCameraSpace()[4]
             self.filteredValues = self.visionRotationFilter.calculate(targetErrorAngle)
+            self.poseXFilter.calculate(self.vision.getPose()[0])
+            self.poseYFilter.calculate(self.vision.getPose()[1])
         else:
             targetErrorAngle = 0
             self.filteredValues = self.visionRotationFilter.calculate(targetErrorAngle)
+    
+    def visionUpdatePose(self):
+        if(self.vision.hasTargets()):
+            newX = self.poseXFilter.calculate(self.vision.getPose()[0])
+            newY = self.poseYFilter.calculate(self.vision.getPose()[1])
+            self.swervometer.setCOF(newX, newY, self.getBearing())
 
     def idle(self):
         for key in self.modules:

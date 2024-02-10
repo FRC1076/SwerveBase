@@ -25,6 +25,10 @@ class Autonomous:
             self.autonTimer.start()
 
         if self.taskListCounter >= len(self.taskList):
+            self.drivetrain.set_fwd(0)
+            self.drivetrain.set_strafe(0)
+            self.drivetrain.set_rcw(0)
+            self.drivetrain.execute('center')
             print("tasks arae done")
             return False
         
@@ -54,6 +58,10 @@ class Autonomous:
             if(self.autonTimer.get() - self.lastTime > self.autonTask[1]):
                 self.lastTime = -1
                 self.taskListCounter += 1
+        
+        elif self.autonTask[0] == 'UPDATE_POSE':
+            #self.drivetrain.visionUpdatePose()
+            self.taskListCounter += 1
 
         return False
     
