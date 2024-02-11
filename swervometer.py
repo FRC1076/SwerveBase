@@ -256,7 +256,7 @@ class Swervometer:
         #print("hypotenuse: ", hypotenuse)
         for key in modules:
             # positionChange is the amount the wheel moved forward
-            position = modules[key].driveEncoder.getPosition()
+            position = modules[key].driveEncoder.getPosition() * 1.79 * 0.0254
             # wheelAngle is the angle of the module wheel relative to the frame of the bot
             #wheelAngle = (modules[key].newAngle - 90) % 360 # The -90 is because the orientation of the swervemodules seems to be negative 90 degrees off from the orientation of the bot.
             wheelAngle = (modules[key].get_current_angle() - 90) % 360
@@ -274,13 +274,13 @@ class Swervometer:
                 #print("rl: pc: ", positionChange, " psi: ", rearLeftPsi, " bot angle: ", currentGyroAngle, " wheel angle: ", wheelAngle, "rlx: ", rearLeftXCoordinate, "rly: ", rearLeftYCoordinate)
             else: # (key == 'front_left'):
                 frontLeftModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
-                print(position)
+                #print(position)
 
         #self.poseEstimator.updateWithTime(self.timer.get(), Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
         self.pose = self.poseEstimator.update(Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
         print(self.pose.X() * 39.37, self.pose.Y() * 39.37)
-        #try:
-        #    print("us", self.currentX, self.currentY)
-        #except:
-        #    print("n/a")
+        try:
+            print("us", self.currentX, self.currentY)
+        except:
+            print("n/a")
         #print(self.poseEstimator.getEstimatedPosition())
