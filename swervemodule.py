@@ -268,9 +268,9 @@ class SwerveModule:
         self.positionChange = (self.newPosition - self.lastPosition) * self.positionSign
         #print("Position Change: ", self.positionChange, " New: ", self.newPosition, " Last: ", self.lastPosition, " Sign: ", self.positionSign)
         self.newAngle = self.get_current_angle()
-        self.lastPosition = self.newPosition # save it for next time
-        self.modulePosition = SwerveModulePosition(self.newPosition * 0.0254, Rotation2d(self.newAngle * math.pi / 180))
-
+        self.modulePosition = SwerveModulePosition((self.modulePosition.distance * 39.37 + self.positionChange) * 0.0254 , Rotation2d((self.newAngle - 90) % 360 * math.pi / 180))
+        print((self.newAngle - 90) % 360)
+        self.lastPosition = self.newPosition
         self.update_smartdash()
     
     def testMove(self, driveInput, rotateInput):

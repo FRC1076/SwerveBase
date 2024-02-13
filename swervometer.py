@@ -244,12 +244,16 @@ class Swervometer:
                 #wheelAngle += 180
             if (key == 'front_right'):
                 frontRightModule = modules[key].getModulePosition()
+                #print('fr', modules[key].getModulePosition().distance)
             elif (key == 'rear_right'):
                 rearRightModule = modules[key].getModulePosition()
+                #print('rr', modules[key].getModulePosition().distance)
             elif (key == 'rear_left'):
                 rearLeftModule = modules[key].getModulePosition()
+                #print('rl', modules[key].getModulePosition().distance)
             else:
                 frontLeftModule = modules[key].getModulePosition()
+                #print('fl', modules[key].getModulePosition().distance)
         self.pose = self.poseEstimator.update(Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
         print(self.pose.X() * 39.37, self.pose.Y() * 39.37)
         print("us", self.currentX, self.currentY)
