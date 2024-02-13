@@ -14,6 +14,9 @@ from collections import namedtuple
 from dashboard import Dashboard
 from robotconfig import MODULE_NAMES
 
+from wpimath.kinematics import SwerveModulePosition
+from wpimath.geometry import Rotation2d
+
 # Create the structure of the config: SmartDashboard prefix, Encoder's zero point, Drive motor inverted, Allow reverse
 ModuleConfig = namedtuple('ModuleConfig', ['sd_prefix', 'zero', 'inverted', 'allow_reverse', 'position_conversion', 'heading_kP', 'heading_kI', 'heading_kD'])
 
@@ -85,6 +88,8 @@ class SwerveModule:
         self.sd.putNumber(DASH_PREFIX, 'Heading kP', self.heading_pid_controller.getP())
         self.sd.putNumber(DASH_PREFIX, 'Heading kI', self.heading_pid_controller.getI())
         self.sd.putNumber(DASH_PREFIX, 'Heading kD', self.heading_pid_controller.getD())
+
+        self.modulePosition = SwerveModulePosition(0, Rotation2d(0))
 
     def reset(self):
         
@@ -264,6 +269,7 @@ class SwerveModule:
         #print("Position Change: ", self.positionChange, " New: ", self.newPosition, " Last: ", self.lastPosition, " Sign: ", self.positionSign)
         self.newAngle = self.get_current_angle()
         self.lastPosition = self.newPosition # save it for next time
+        self.modulePosition = SwerveModulePosition(self.newPosition * 0.0254, Rotation2d(self.newAngle * math.pi / 180))
 
         self.update_smartdash()
     
@@ -283,6 +289,9 @@ class SwerveModule:
     
     def getDriveEncoder(self):
         return self.driveEncoder
+    
+    def getModulePosition(self):
+        return self.modulePosition
 
     def update_smartdash(self):
         """

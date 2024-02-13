@@ -205,13 +205,13 @@ class Swervometer:
             position = modules[key].driveEncoder.getPosition() * 1.79 * 0.0254
             wheelAngle = (modules[key].get_current_angle() - 90) % 360 
             if (key == 'front_right'):
-                frontRightModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+                frontRightModule = modules[key].getModulePosition()
             elif (key == 'rear_right'):
-                rearRightModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+                rearRightModule = modules[key].getModulePosition()
             elif (key == 'rear_left'):
-                rearLeftModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+                rearLeftModule = modules[key].getModulePosition()
             else:
-                frontLeftModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+                frontLeftModule = modules[key].getModulePosition()
         """
         kinematics = SwerveDrive4Kinematics(Translation2d(-self.swerveModuleOffsetX * 0.0254, self.swerveModuleOffsetY * 0.0254), #rl
                                             Translation2d(-self.swerveModuleOffsetY * 0.0254, -self.swerveModuleOffsetX * 0.0254), #rr
@@ -239,17 +239,17 @@ class Swervometer:
         rearRightModule = None
         for key in modules:
             position = modules[key].driveEncoder.getPosition() * 1.79 * 0.0254
-            if not modules[key].inverted:
-                position *= -1
             wheelAngle = (modules[key].get_current_angle() - 90) % 360 
+            #if not modules[key].inverted:
+                #wheelAngle += 180
             if (key == 'front_right'):
-                frontRightModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+                frontRightModule = modules[key].getModulePosition()
             elif (key == 'rear_right'):
-                rearRightModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+                rearRightModule = modules[key].getModulePosition()
             elif (key == 'rear_left'):
-                rearLeftModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+                rearLeftModule = modules[key].getModulePosition()
             else:
-                frontLeftModule = SwerveModulePosition(position, Rotation2d(wheelAngle * math.pi / 180))
+                frontLeftModule = modules[key].getModulePosition()
         self.pose = self.poseEstimator.update(Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
         print(self.pose.X() * 39.37, self.pose.Y() * 39.37)
         print("us", self.currentX, self.currentY)
