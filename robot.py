@@ -292,10 +292,8 @@ class MyRobot(wpilib.TimedRobot):
         gyroAngle = self.drivetrain.getGyroAngle()
         modules = self.drivetrain.getModules()
         self.swervometer.updatePoseEstimator(gyroAngle, modules)
-        #if(self.vision.hasTargets()):
-            #self.swervometer.poseEstimator.addVisionMeasurement(Pose2d(self.vision.getPose()[0], self.vision.getPose()[1]), self.swervometer.getTimer() - self.vision.getTotalLatency() / 1000)
-        #if self.cliffDetector:
-        #    self.cliffDetector.update()
+        if(self.vision.hasTargets()):
+            self.swervometer.poseEstimator.addVisionMeasurement(Pose2d(self.vision.getPose()[0], self.vision.getPose()[1]), self.swervometer.getTimer() - self.vision.getTotalLatency() / 1000)
         return True
 
     def teleopInit(self):
