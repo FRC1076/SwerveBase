@@ -63,7 +63,7 @@ class Autonomous:
                 self.taskListCounter += 1
         
         elif self.autonTask[0] == 'UPDATE_POSE':
-            self.drivetrain.visionUpdatePose()
+            #self.drivetrain.visionUpdatePose()
             self.taskListCounter += 1
 
         return False
