@@ -254,6 +254,6 @@ class Swervometer:
             else:
                 frontLeftModule = modules[key].getModulePosition()
                 #print('fl', modules[key].getModulePosition().distance)
-        self.pose = self.poseEstimator.update(Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
+        self.pose = self.poseEstimator.updateWithTime(self.getTimer(), Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
         print(self.pose.X() * 39.37, self.pose.Y() * 39.37)
         print("us", self.currentX, self.currentY)

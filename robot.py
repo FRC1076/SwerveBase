@@ -293,18 +293,19 @@ class MyRobot(wpilib.TimedRobot):
         modules = self.drivetrain.getModules()
         self.swervometer.updatePoseEstimator(gyroAngle, modules)
         if(self.vision.hasTargets()):
-            self.swervometer.poseEstimator.addVisionMeasurement(Pose2d(self.vision.getPose()[0], self.vision.getPose()[1]), self.swervometer.getTimer() - self.vision.getTotalLatency() / 1000)
+            self.swervometer.poseEstimator.addVisionMeasurement(Pose2d(self.vision.getPose()[0] * 0.0254, self.vision.getPose()[1] * 0.0254, gyroAngle * math.pi / 180), self.swervometer.getTimer() - self.vision.getTotalLatency() / 1000)
+            #print("ADDING VISION MEASUREMENT")
         return True
 
     def teleopInit(self):
         self.log("teleopInit ran")
         self.drivetrain.setRampRates(self.teleopOpenLoopRampRate, self.teleopClosedLoopRampRate)
-        self.drivetrain.setInAuton(False)
+        self.drivetrain.setInAuton(False)   
         return True
 
     def teleopPeriodic(self):
         #print(self.vision.getPose()[0], self.vision.getPose()[1], self.vision.getPose()[2])
-        self.drivetrain.visionPeriodic()
+        #self.drivetrain.visionPeriodic()
         if self.teleopDrivetrain():
             self.log("TeleoDrivetrain returned true. In a maneuver.")
             return

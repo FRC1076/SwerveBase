@@ -26,7 +26,7 @@ controllerConfig = {
 }
 
 swervometerConfig = { # All positions measured in inches
-    'TEAM_IS_RED': True, # Is the robot part of the Red Team?
+    'TEAM_IS_RED': False, # Is the robot part of the Red Team?
     'FIELD_START_POSITION': 'A', # Which of three starting positions is selected?
     'HAS_BUMPERS_ATTACHED': True, # Does the robot currently have bumpers attached?
     'USE_COM_ADJUSTMENT': True, # Should robot compensate for CoM lever arms?
@@ -41,7 +41,7 @@ swervometerConfig = { # All positions measured in inches
     'FIELD_RED_C_START_POSITION_X': 248.625, # X-Coordinate of starting position C when on red team
     'FIELD_RED_C_START_POSITION_Y': -115.25, #-137.90, # Y-Coordinate of starting postion C when on red team
     'FIELD_RED_C_START_ANGLE': 0.0, # Heading angle of starting position C when on red team
-    'FIELD_BLU_A_START_POSITION_X': -270.53, # X-Coordinate of starting position A when on blue team
+    'FIELD_BLU_A_START_POSITION_X': -294, # X-Coordinate of starting position A when on blue team
     'FIELD_BLU_A_START_POSITION_Y': 57, # 40.15, # Y-Coordinate of starting postion A when on blue team
     'FIELD_BLU_A_START_ANGLE': 180.0, # Heading angle of starting position A when on blue team
     'FIELD_BLU_B_START_POSITION_X': -248.625, # X-Coordinate of starting position B when on blue team
@@ -162,7 +162,8 @@ autonConfig = {
     'DO_COMMUNITY': False, # Only applies for position B
     'AUTON_OPEN_LOOP_RAMP_RATE': 1, # Improves the quality of swervometery by avoiding slippage.
     'AUTON_CLOSED_LOOP_RAMP_RATE': 0,
-    'TASK_RED_A': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 230.5, 57, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 262.25, 114, 0], ['WAIT', 2], ['MOVE', 294, 114, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['MOVE', 262.25, 0, 0], ['MOVE', 230.5, 0, 0], ['WAIT', 2], ['MOVE', 294, 57, 0]] #,['MOVE', 91.9375, -40.15, 180]]
+    'TASK_RED_A': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 230.5, 57, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 262.25, 114, 0], ['WAIT', 2], ['MOVE', 294, 114, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['MOVE', 262.25, 0, 0], ['MOVE', 230.5, 0, 0], ['WAIT', 2], ['MOVE', 294, 57, 0]], #,['MOVE', 91.9375, -40.15, 180]]
+    'TASK_BLUE_A': []
     # 'TASK_BLU_A_TF': [['CLAW_INTAKE_AND_STOP'],
     #                     ['POSITION_GRABBER', 2],
     #                     ['ELEVATOR_DOWN'],
