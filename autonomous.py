@@ -73,6 +73,7 @@ class Autonomous:
                 self.trajectory = TrajectoryUtil.fromPathweaverJson(self.autonTask[1])
             self.drivetrain.trajectoryMove(self.trajectory.sample(self.autonTimer.get() - self.lastTime))
             self.drivetrain.execute('center')
+            #what condition to move on?
         return False
     
     def move(self):
