@@ -704,7 +704,7 @@ class SwerveDrive:
     
     def trajectoryMove(self, trajectoryState): #pose is of class Trajectory.state
         currentX, currentY, currentBearing = self.swervometer.getEstimatedPosition()
-        self.chassisSpeeds = self.holonomicController.calculate(Pose2d(currentX * 0.0254, currentY * 0.0254, Rotation2d.fromDegrees(currentBearing)), trajectoryState, Rotation2d.fromDegrees(currentBearing))
+        self.chassisSpeeds = self.holonomicController.calculate(Pose2d(currentX, currentY, Rotation2d.fromDegrees(currentBearing)), trajectoryState, Rotation2d.fromDegrees(currentBearing))
         self.set_fwd(self.chassisSpeeds.vx)
         self.set_strafe(self.chassisSpeeds.vy)
         self.set_rcw(self.chassisSpeeds.omega)
