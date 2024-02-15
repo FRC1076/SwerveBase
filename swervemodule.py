@@ -89,7 +89,7 @@ class SwerveModule:
         self.sd.putNumber(DASH_PREFIX, 'Heading kI', self.heading_pid_controller.getI())
         self.sd.putNumber(DASH_PREFIX, 'Heading kD', self.heading_pid_controller.getD())
 
-        self.modulePosition = SwerveModulePosition(0, Rotation2d(0))
+        self.swerveModulePosition = SwerveModulePosition(0, Rotation2d(0))
 
     def reset(self):
         
@@ -268,8 +268,8 @@ class SwerveModule:
         self.positionChange = (self.newPosition - self.lastPosition) * self.positionSign
         #print("Position Change: ", self.positionChange, " New: ", self.newPosition, " Last: ", self.lastPosition, " Sign: ", self.positionSign)
         self.newAngle = self.get_current_angle()
-        self.modulePosition = SwerveModulePosition((self.modulePosition.distance * 39.37 + self.positionChange) * 0.0254 , Rotation2d((self.newAngle - 90) % 360 * math.pi / 180))
-        print((self.newAngle - 90) % 360)
+        #use wpilib's swerve module position. must add the position change because wpilib can't take into account the positionSign, so we must take it into account before we feed it in
+        self.swerveModulePosition = SwerveModulePosition((self.swerveModulePosition.distance * 39.37 + self.positionChange) * 0.0254 , Rotation2d((self.newAngle - 90) % 360 * math.pi / 180))
         self.lastPosition = self.newPosition
         self.update_smartdash()
     
@@ -290,8 +290,8 @@ class SwerveModule:
     def getDriveEncoder(self):
         return self.driveEncoder
     
-    def getModulePosition(self):
-        return self.modulePosition
+    def getSwerveModulePosition(self):
+        return self.swerveModulePosition
 
     def update_smartdash(self):
         """

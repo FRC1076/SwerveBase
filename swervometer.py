@@ -196,33 +196,11 @@ class Swervometer:
         
         return self.currentX, self.currentY, self.currentBearing
    
-    def initPoseEstimator(self, modules):
-        frontLeftModule = None
-        frontRightModule = None
-        rearLeftModule = None
-        rearRightModule = None
-        for key in modules:
-            position = modules[key].driveEncoder.getPosition() * 1.79 * 0.0254
-            wheelAngle = (modules[key].get_current_angle() - 90) % 360 
-            if (key == 'front_right'):
-                frontRightModule = modules[key].getModulePosition()
-            elif (key == 'rear_right'):
-                rearRightModule = modules[key].getModulePosition()
-            elif (key == 'rear_left'):
-                rearLeftModule = modules[key].getModulePosition()
-            else:
-                frontLeftModule = modules[key].getModulePosition()
-        """
-        kinematics = SwerveDrive4Kinematics(Translation2d(-self.swerveModuleOffsetX * 0.0254, self.swerveModuleOffsetY * 0.0254), #rl
-                                            Translation2d(-self.swerveModuleOffsetY * 0.0254, -self.swerveModuleOffsetX * 0.0254), #rr
-                                            Translation2d(self.swerveModuleOffsetY * 0.0254, self.swerveModuleOffsetX * 0.0254), #fr
-                                            Translation2d(self.swerveModuleOffsetX * 0.0254, -self.swerveModuleOffsetY * 0.0254)) #fl
-        """
-        #saved for later, somewhat working
-        """SwerveDrive4Kinematics(Translation2d(self.swerveModuleOffsetX * 0.0254, self.swerveModuleOffsetY * 0.0254),
-                                             Translation2d(self.swerveModuleOffsetX * 0.0254, -self.swerveModuleOffsetY * 0.0254),
-                                             Translation2d(-self.swerveModuleOffsetX * 0.0254, self.swerveModuleOffsetY * 0.0254),
-                                             Translation2d(-self.swerveModuleOffsetX * 0.0254, -self.swerveModuleOffsetY * 0.0254))"""
+    def initPoseEstimator(self, modules, vision):
+        frontLeftModule = modules['front_left'].getModulePosition()
+        frontRightModule = modules['front_right'].getModulePosition()
+        rearLeftModule = modules['rear_left'].getModulePosition()
+        rearRightModule = modules['rear_right'].getModulePosition()
         #correct order kinematics
         kinematics = SwerveDrive4Kinematics(Translation2d(self.swerveModuleOffsetX * 0.0254, self.swerveModuleOffsetY * 0.0254),
                                              Translation2d(self.swerveModuleOffsetX * 0.0254, -self.swerveModuleOffsetY * 0.0254),
@@ -231,29 +209,13 @@ class Swervometer:
         gyroAngle = Rotation2d(self.teamGyroAdjustment * math.pi / 180)
         swerveModules = (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule)
         self.poseEstimator =  SwerveDrive4PoseEstimator(kinematics, gyroAngle, swerveModules, Pose2d(self.currentX * 0.0254, self.currentY * 0.0254, self.teamGyroAdjustment * math.pi / 180))
+        self.vision = vision
 
     def updatePoseEstimator(self, gyroAngle, modules):
-        frontLeftModule = None
-        frontRightModule = None
-        rearLeftModule = None
-        rearRightModule = None
-        for key in modules:
-            position = modules[key].driveEncoder.getPosition() * 1.79 * 0.0254
-            wheelAngle = (modules[key].get_current_angle() - 90) % 360 
-            #if not modules[key].inverted:
-                #wheelAngle += 180
-            if (key == 'front_right'):
-                frontRightModule = modules[key].getModulePosition()
-                #print('fr', modules[key].getModulePosition().distance)
-            elif (key == 'rear_right'):
-                rearRightModule = modules[key].getModulePosition()
-                #print('rr', modules[key].getModulePosition().distance)
-            elif (key == 'rear_left'):
-                rearLeftModule = modules[key].getModulePosition()
-                #print('rl', modules[key].getModulePosition().distance)
-            else:
-                frontLeftModule = modules[key].getModulePosition()
-                #print('fl', modules[key].getModulePosition().distance)
+        frontLeftModule = modules['front_left'].getModulePosition()
+        frontRightModule = modules['front_right'].getModulePosition()
+        rearLeftModule = modules['rear_left'].getModulePosition()
+        rearRightModule = modules['rear_right'].getModulePosition()
         self.pose = self.poseEstimator.updateWithTime(self.getTimer(), Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
-        print(self.pose.X() * 39.37, self.pose.Y() * 39.37)
-        print("us", self.currentX, self.currentY)
+        if(self.vision.hasTargets()):
+            self.swervometer.poseEstimator.addVisionMeasurement(Pose2d(self.vision.getPose()[0] * 0.0254, self.vision.getPose()[1] * 0.0254, gyroAngle * math.pi / 180), self.swervometer.getTimer() - self.vision.getTotalLatency() / 1000)

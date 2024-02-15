@@ -87,7 +87,7 @@ class MyRobot(wpilib.TimedRobot):
             self.drivetrain.printGyro()
         
         self.swervometer.startTimer()
-        self.swervometer.initPoseEstimator(self.drivetrain.getModules())
+        self.swervometer.initPoseEstimator(self.drivetrain.getModules(), self.vision)
 
 
     def disabledExit(self):
@@ -292,9 +292,6 @@ class MyRobot(wpilib.TimedRobot):
         gyroAngle = self.drivetrain.getGyroAngle()
         modules = self.drivetrain.getModules()
         self.swervometer.updatePoseEstimator(gyroAngle, modules)
-        if(self.vision.hasTargets()):
-            self.swervometer.poseEstimator.addVisionMeasurement(Pose2d(self.vision.getPose()[0] * 0.0254, self.vision.getPose()[1] * 0.0254, gyroAngle * math.pi / 180), self.swervometer.getTimer() - self.vision.getTotalLatency() / 1000)
-            #print("ADDING VISION MEASUREMENT")
         return True
 
     def teleopInit(self):
