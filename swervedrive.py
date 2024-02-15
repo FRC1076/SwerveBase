@@ -10,11 +10,13 @@ from dashboard import Dashboard
 from networktables import NetworkTables
 from networktables.util import ntproperty
 from collections import namedtuple
-from wpimath.controller import PIDController
+from wpimath.controller import PIDController, HolonomicDriveController, ProfiledPIDController
+from wpimath.trajectory import TrapezoidProfile
 import wpimath.geometry
 from swervometer import Swervometer
 from logger import Logger
 from robotconfig import MODULE_NAMES
+from wpimath.geometry import Pose2d, Rotation2d
 import wpilib
 from wpimath.filter import LinearFilter
 
@@ -196,6 +198,8 @@ class SwerveDrive:
         x, y, r = self.swervometer.getCOF()
         self.field = wpilib.Field2d()
         self.field.setRobotPose(wpimath.geometry.Pose2d((x + 248.625) * 0.0254, (y + 115.25) * 0.0254, wpimath.geometry.Rotation2d(self.getGyroAngle() * math.pi / 180)))
+
+        self.holonomicController = HolonomicDriveController(self.target_x_pid_controller, self.target_y_pid_controller, ProfiledPIDController(self.bearing_kP, self.bearing_kI, self.bearing_kD, TrapezoidProfile.Constraints(2 * math.pi, math.pi)))
 
     def setInAuton(self, state):
         self.inAuton = state
@@ -697,6 +701,14 @@ class SwerveDrive:
             # self.log("xPositionTolerance: ", self.target_x_pid_controller.getPositionTolerance(), "yPositionTolerance: ", self.target_y_pid_controller.getPositionTolerance(), "rcwPositionTolerance: ", self.target_rcw_pid_controller.getPositionTolerance())
             # self.log("currentX: ", currentX, " targetX: ", x, "x_error: ", x_error, " currentY: ", currentY, " targetY: ", y, " y_error: ", y_error, " currentBearing: ", currentRCW, " self.bearing: ", self.bearing, " target bearing: ", bearing)
             return False
+    
+    def trajectoryMove(self, trajectoryState): #pose is of class Trajectory.state
+        currentX, currentY, currentBearing = self.swervometer.getEstimatedPosition()
+        self.chassisSpeeds = self.holonomicController.calculate(Pose2d(currentX, currentY, Rotation2d.fromDegrees(currentBearing)), trajectoryState, Rotation2d.fromDegrees(currentBearing))
+        self.set_fwd(self.chassisSpeeds.vx)
+        self.set_strafe(self.chassisSpeeds.vy)
+        self.set_rcw(self.chassisSpeeds.omega)
+
 
     def _calculate_vectors(self):
         """

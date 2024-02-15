@@ -1,5 +1,6 @@
 import wpilib
 from dashboard import Dashboard
+from wpimath.trajectory import Trajectory, TrajectoryUtil
 class Autonomous:
 
     def __init__(self, config, team_is_red, field_start_position, drivetrain):
@@ -65,7 +66,13 @@ class Autonomous:
         elif self.autonTask[0] == 'UPDATE_POSE':
             #self.drivetrain.visionUpdatePose()
             self.taskListCounter += 1
-
+        
+        elif self.autonTask[0] == 'TRAJECTORY':
+            if self.lastTime == -1:
+                self.lastTime = self.autonTimer.get()
+                self.trajectory = TrajectoryUtil.fromPathweaverJson(self.autonTask[1])
+            self.drivetrain.trajectoryMove(self.trajectory.sample(self.autonTimer.get() - self.lastTime))
+            self.drivetrain.execute('center')
         return False
     
     def move(self):
