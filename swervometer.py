@@ -75,7 +75,6 @@ class Swervometer:
         self.currentX = x
         self.currentY = y
         self.currentBearing = bearing
-
     def calcLeverArmLengths(self):
 
         if self.useCOMadjustment:
@@ -117,7 +116,7 @@ class Swervometer:
             return self.rearLeftCOMmult
         else: # (key == 'front_left'):
             return self.frontLeftCOMmult
-
+    """
     def calculateModuleCoordinates(self, psi, currentGyroAngle, hypotenuse, positionChange, wheelAngle, val = "NONE"):
         #print("calcModCoord: psi: ", psi, " currentGyroAngle: ", currentGyroAngle, " hypo: ", hypotenuse, " posChg: ", positionChange, " wheelAngle: ", wheelAngle)
         
@@ -195,6 +194,7 @@ class Swervometer:
         self.currentBearing = currentGyroAngle
         
         return self.currentX, self.currentY, self.currentBearing
+    """
    
     def initPoseEstimator(self, modules, vision):
         frontLeftModule = modules['front_left'].getModulePosition()
@@ -216,6 +216,10 @@ class Swervometer:
         frontRightModule = modules['front_right'].getModulePosition()
         rearLeftModule = modules['rear_left'].getModulePosition()
         rearRightModule = modules['rear_right'].getModulePosition()
-        self.pose = self.poseEstimator.updateWithTime(self.getTimer(), Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
+        self.currentPose = self.poseEstimator.updateWithTime(self.getTimer(), Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
+        self.currentBearing = gyroAngle
         if(self.vision.hasTargets()):
             self.swervometer.poseEstimator.addVisionMeasurement(Pose2d(self.vision.getPose()[0] * 0.0254, self.vision.getPose()[1] * 0.0254, gyroAngle * math.pi / 180), self.swervometer.getTimer() - self.vision.getTotalLatency() / 1000)
+
+    def getEstimatedPosition(self):
+        return self.currentPose.X, self.currentPose.Y, self.currentBearing
