@@ -10,7 +10,7 @@ import wpimath.controller
 from wpimath.geometry import Pose2d
 from wpilib import interfaces
 import rev
-import ctre
+from phoenix5.sensors import CANCoder
 from navx import AHRS
 from networktables import NetworkTables
 
@@ -240,7 +240,7 @@ class MyRobot(wpilib.TimedRobot):
         rlModule_cfg = ModuleConfig(sd_prefix='RearLeft_Module', zero=272.5 + 90, inverted=False, allow_reverse=True, position_conversion=config['ROBOT_INCHES_PER_ROTATION'], heading_kP=config['HEADING_KP'], heading_kI=config['HEADING_KI'], heading_kD=config['HEADING_KD'])
         rrModule_cfg = ModuleConfig(sd_prefix='RearRight_Module', zero=307.5 + 90, inverted=False, allow_reverse=True, position_conversion=config['ROBOT_INCHES_PER_ROTATION'], heading_kP=config['HEADING_KP'], heading_kI=config['HEADING_KI'], heading_kD=config['HEADING_KD'])
         
-        motor_type = rev.CANSparkMaxLowLevel.MotorType.kBrushless
+        motor_type = rev.CANSparkLowLevel.MotorType.kBrushless
 
         # Drive motors
         flModule_driveMotor = rev.CANSparkMax(config['FRONTLEFT_DRIVEMOTOR'], motor_type)
@@ -257,11 +257,10 @@ class MyRobot(wpilib.TimedRobot):
         frModule_rotateMotor = rev.CANSparkMax(config['FRONTRIGHT_ROTATEMOTOR'], motor_type)
         rlModule_rotateMotor = rev.CANSparkMax(config['REARLEFT_ROTATEMOTOR'], motor_type)
         rrModule_rotateMotor = rev.CANSparkMax(config['REARRIGHT_ROTATEMOTOR'], motor_type)
-
-        flModule_rotateMotor_encoder = ctre.CANCoder(config['FRONTLEFT_ENCODER'])
-        frModule_rotateMotor_encoder = ctre.CANCoder(config['FRONTRIGHT_ENCODER'])
-        rlModule_rotateMotor_encoder = ctre.CANCoder(config['REARLEFT_ENCODER'])
-        rrModule_rotateMotor_encoder = ctre.CANCoder(config['REARRIGHT_ENCODER'])
+        flModule_rotateMotor_encoder = CANCoder(config['FRONTLEFT_ENCODER'])
+        frModule_rotateMotor_encoder = CANCoder(config['FRONTRIGHT_ENCODER'])
+        rlModule_rotateMotor_encoder = CANCoder(config['REARLEFT_ENCODER'])
+        rrModule_rotateMotor_encoder = CANCoder(config['REARRIGHT_ENCODER'])
 
         frontLeftModule = SwerveModule(flModule_driveMotor, flModule_driveMotor_encoder, flModule_rotateMotor, flModule_rotateMotor_encoder, flModule_cfg)
         frontRightModule = SwerveModule(frModule_driveMotor, frModule_driveMotor_encoder, frModule_rotateMotor, frModule_rotateMotor_encoder, frModule_cfg)
@@ -452,6 +451,4 @@ class MyRobot(wpilib.TimedRobot):
         self.logger.log(MODULE_NAMES.ROBOT,dataToLog)
 
 if __name__ == "__main__":
-    if sys.argv[1] == 'sim':
-        TEST_MODE = True
     wpilib.run(MyRobot)

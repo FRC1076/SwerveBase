@@ -1,6 +1,7 @@
 import wpilib
 from dashboard import Dashboard
 from wpimath.trajectory import Trajectory, TrajectoryUtil
+from pathplannerlib.path import PathPlannerPath
 class Autonomous:
 
     def __init__(self, config, team_is_red, field_start_position, drivetrain):
@@ -67,9 +68,13 @@ class Autonomous:
             #self.drivetrain.visionUpdatePose()
             self.taskListCounter += 1
         
-        elif self.autonTask[0] == 'TRAJECTORY':
+        elif self.autonTask[0] == 'PATH':
             if self.lastTime == -1:
                 self.lastTime = self.autonTimer.get()
+                self.path = PathPlannerPath.fromPathFile(self.autonTask[1])
+                self.pathTrajectory = self.path.getTrajectory()
+            print(self.pathTrajectory.sample(self.autonTimer.get() - self.lastTime))
+
         return False
     
     def move(self):

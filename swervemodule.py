@@ -4,7 +4,7 @@ import math
 import wpilib
 import wpilib.drive
 import wpimath.controller
-import ctre
+import phoenix5
 import rev
 
 from networktables import NetworkTables
