@@ -1025,7 +1025,7 @@ class SwerveDrive:
         for key in self.modules:
             self.log("Module: Key: ", key)
             self.modules[key].execute()
-        COFX, COFY, COFAngle = self.swervometer.getEstimatedPosition() #calculateCOFPose(self.modules, self.getGyroAngle())
+        COFX, COFY, COFAngle = self.swervometer.getCOF() #calculateCOFPose(self.modules, self.getGyroAngle())
         #print(COFX, COFY, self.vision.getPose()[0], self.vision.getPose()[1])
         #print("\n")
         #else:
@@ -1099,6 +1099,29 @@ class SwerveDrive:
         else:
             self.set_rcw(0)
             self.execute('center')
+
+    def pointToPose(self, x, y):
+        currentX, currentY, currentR = self.swervometer.getCOF()
+        #print(y - currentY, x - currentX)
+        try:
+            #oliver = self.getGyroAngle() - math.atan((y - currentY)/(x - currentX)) * 180/math.pi
+            desiredAngle = 180 - math.atan2((currentY - y), (currentX - x)) * 180/math.pi
+            #print(self.getGyroAngle() - math.atan((y - currentY)/(x - currentX)) * 180/math.pi)
+            #print(math.atan(-(y - currentY)/(x - currentX)) * 180/math.pi)
+            print(y, currentY, x, currentX)
+            print(desiredAngle)
+            print(self.getGyroAngle())
+            angleMove = self.bearing_pid_controller.calculate(self.getGyroAngle(), desiredAngle)
+            #print(math.atan2(-(y - currentY), (x - currentX)) * 180/math.pi)
+            #print("Gyro", self.getGyroAngle())
+            #print(angleMove)
+            #print(-clamp(angleMove))
+            self.set_rcw(clamp(angleMove))
+        except:
+            pass
+        #print(self.getGyroAngle())
+
+        return
     
     def visionPeriodic(self):
         if(self.vision.hasTargets()):

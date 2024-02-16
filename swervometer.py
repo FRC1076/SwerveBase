@@ -197,10 +197,10 @@ class Swervometer:
     """
    
     def initPoseEstimator(self, modules, vision):
-        frontLeftModule = modules['front_left'].getModulePosition()
-        frontRightModule = modules['front_right'].getModulePosition()
-        rearLeftModule = modules['rear_left'].getModulePosition()
-        rearRightModule = modules['rear_right'].getModulePosition()
+        frontLeftModule = modules['front_left'].getSwerveModulePosition()
+        frontRightModule = modules['front_right'].getSwerveModulePosition()
+        rearLeftModule = modules['rear_left'].getSwerveModulePosition()
+        rearRightModule = modules['rear_right'].getSwerveModulePosition()
         #correct order kinematics
         kinematics = SwerveDrive4Kinematics(Translation2d(self.swerveModuleOffsetX * 0.0254, self.swerveModuleOffsetY * 0.0254),
                                              Translation2d(self.swerveModuleOffsetX * 0.0254, -self.swerveModuleOffsetY * 0.0254),
@@ -212,14 +212,15 @@ class Swervometer:
         self.vision = vision
 
     def updatePoseEstimator(self, gyroAngle, modules):
-        frontLeftModule = modules['front_left'].getModulePosition()
-        frontRightModule = modules['front_right'].getModulePosition()
-        rearLeftModule = modules['rear_left'].getModulePosition()
-        rearRightModule = modules['rear_right'].getModulePosition()
-        self.currentPose = self.poseEstimator.updateWithTime(self.getTimer(), Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
+        frontLeftModule = modules['front_left'].getSwerveModulePosition()
+        frontRightModule = modules['front_right'].getSwerveModulePosition()
+        rearLeftModule = modules['rear_left'].getSwerveModulePosition()
+        rearRightModule = modules['rear_right'].getSwerveModulePosition()
+        self.poseEstimator.updateWithTime(self.getTimer(), Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
         self.currentBearing = gyroAngle
         if(self.vision.hasTargets()):
-            self.swervometer.poseEstimator.addVisionMeasurement(Pose2d(self.vision.getPose()[0] * 0.0254, self.vision.getPose()[1] * 0.0254, gyroAngle * math.pi / 180), self.swervometer.getTimer() - self.vision.getTotalLatency() / 1000)
-
-    def getEstimatedPosition(self):
-        return self.currentPose.X, self.currentPose.Y, self.currentBearing
+            self.poseEstimator.addVisionMeasurement(Pose2d(self.vision.getPose()[0] * 0.0254, self.vision.getPose()[1] * 0.0254, gyroAngle * math.pi / 180), self.getTimer() - self.vision.getTotalLatency() / 1000)
+        self.currentPose = self.poseEstimator.getEstimatedPosition()
+        self.currentX = self.currentPose.X() * 39.37
+        self.currentY = self.currentPose.Y() * 39.37
+        print("CURRENT POSE", self.currentX, self.currentY)

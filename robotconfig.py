@@ -32,7 +32,7 @@ swervometerConfig = { # All positions measured in inches
     'USE_COM_ADJUSTMENT': True, # Should robot compensate for CoM lever arms?
     'FIELD_ORIGIN_X': 0.0, # X-Coordinate of field orgin (center of field, viewed from scoring table)
     'FIELD_ORIGIN_Y': 0.0, # Y-Coordinate of field orgin (center of field, viewed from scoring table)
-    'FIELD_RED_A_START_POSITION_X': 294, #values of 2024 on left #248.625, #159.0, # X-Coordinate of starting position A when on red team
+    'FIELD_RED_A_START_POSITION_X': 285, #values of 2024 on left #248.625, #159.0, # X-Coordinate of starting position A when on red team
     'FIELD_RED_A_START_POSITION_Y': 57, #values of 2024 on left #16.75, #40.15, #54.25, # Y-Coordinate of starting postion A when on red team
     'FIELD_RED_A_START_ANGLE': 0, # Heading angle of starting position A when on red team
     'FIELD_RED_B_START_POSITION_X': 248.625, # X-Coordinate of starting position B when on red team
@@ -41,7 +41,7 @@ swervometerConfig = { # All positions measured in inches
     'FIELD_RED_C_START_POSITION_X': 248.625, # X-Coordinate of starting position C when on red team
     'FIELD_RED_C_START_POSITION_Y': -115.25, #-137.90, # Y-Coordinate of starting postion C when on red team
     'FIELD_RED_C_START_ANGLE': 0.0, # Heading angle of starting position C when on red team
-    'FIELD_BLU_A_START_POSITION_X': -294, # X-Coordinate of starting position A when on blue team
+    'FIELD_BLU_A_START_POSITION_X': -285, # X-Coordinate of starting position A when on blue team
     'FIELD_BLU_A_START_POSITION_Y': 57, # 40.15, # Y-Coordinate of starting postion A when on blue team
     'FIELD_BLU_A_START_ANGLE': 180.0, # Heading angle of starting position A when on blue team
     'FIELD_BLU_B_START_POSITION_X': -248.625, # X-Coordinate of starting position B when on blue team
