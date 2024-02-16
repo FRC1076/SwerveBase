@@ -365,7 +365,7 @@ class MyRobot(wpilib.TimedRobot):
 
             if driver.getBButton():
                 self.drivetrain.move(fwd, strafe, 0 , self.drivetrain.getBearing())
-                self.drivetrain.pointToPose(248.625, 16.75)
+                self.drivetrain.pointToPose(-294, 57)
                 self.drivetrain.execute('center')
                 return
 
