@@ -163,7 +163,7 @@ autonConfig = {
     'AUTON_OPEN_LOOP_RAMP_RATE': 1, # Improves the quality of swervometery by avoiding slippage.
     'AUTON_CLOSED_LOOP_RAMP_RATE': 0,
     #'TASK_RED_A': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 230.5, 57, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 262.25, 114, 0], ['WAIT', 2], ['MOVE', 294, 114, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['MOVE', 262.25, 0, 0], ['MOVE', 230.5, 0, 0], ['WAIT', 2], ['MOVE', 294, 57, 0]], #,['MOVE', 91.9375, -40.15, 180]]
-    'TASK_RED_A': [['TRAJECTORY', '/PathWeaver/Paths/CtoNote1.path']],
+    'TASK_RED_A': [['TRAJECTORY', '']],
     'TASK_BLUE_A': []
     # 'TASK_BLU_A_TF': [['CLAW_INTAKE_AND_STOP'],
     #                     ['POSITION_GRABBER', 2],

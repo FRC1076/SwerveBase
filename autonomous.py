@@ -70,15 +70,6 @@ class Autonomous:
         elif self.autonTask[0] == 'TRAJECTORY':
             if self.lastTime == -1:
                 self.lastTime = self.autonTimer.get()
-                string = ""
-                for i in range(0, len(self.autonTask[1])):
-                    string += self.autonTask[1][i]
-                    self.trajectory = TrajectoryUtil.fromPathweaverJson(wpilib.getDeployDirectory() + self.autonTask[1])
-                    print(self.autonTask[1])
-            print(self.trajectory.sample(self.autonTimer.get() - self.lastTime).pose.X(), self.trajectory.sample(self.autonTimer.get() - self.lastTime).pose.Y())
-            #self.drivetrain.trajectoryMove(self.trajectory.sample(self.autonTimer.get() - self.lastTime))
-            #self.drivetrain.execute('center')
-            #what condition to move on?
         return False
     
     def move(self):
