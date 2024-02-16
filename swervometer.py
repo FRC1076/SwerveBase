@@ -1,5 +1,11 @@
 import math
 import wpilib
+from wpimath.estimator import SwerveDrive4PoseEstimator
+from wpimath.kinematics import SwerveDrive4Kinematics
+from wpimath.geometry import Translation2d
+from wpimath.geometry import Rotation2d
+from wpimath.kinematics import SwerveModulePosition
+from wpimath.geometry import Pose2d
 from collections import namedtuple
 
 # Create the structure of the field config:
@@ -42,8 +48,15 @@ class Swervometer:
         self.com_offset_x = self.robotProperty.com_offset_x
         self.com_offset_y = self.robotProperty.com_offset_y
         print("init current X: ", self.currentX, " init current y: ", self.currentY, " init current bearing: ", self.currentBearing)
-    
+
         self.calcLeverArmLengths()
+
+    def startTimer(self):
+        self.timer = wpilib.Timer()
+        self.timer.start()
+
+    def getTimer(self):
+        return self.timer.get()
 
     def getFrameDimensions(self):
         #return self.frame_dimension_x, self.frame_dimension_y
@@ -62,7 +75,6 @@ class Swervometer:
         self.currentX = x
         self.currentY = y
         self.currentBearing = bearing
-
     def calcLeverArmLengths(self):
 
         if self.useCOMadjustment:
@@ -104,8 +116,8 @@ class Swervometer:
             return self.rearLeftCOMmult
         else: # (key == 'front_left'):
             return self.frontLeftCOMmult
-
-    def calculateModuleCoordinates(self, psi, currentGyroAngle, hypotenuse, positionChange, wheelAngle):
+    """
+    def calculateModuleCoordinates(self, psi, currentGyroAngle, hypotenuse, positionChange, wheelAngle, val = "NONE"):
         #print("calcModCoord: psi: ", psi, " currentGyroAngle: ", currentGyroAngle, " hypo: ", hypotenuse, " posChg: ", positionChange, " wheelAngle: ", wheelAngle)
         
         baseAngle = (psi + currentGyroAngle) % 360 # angle of the module
@@ -121,7 +133,7 @@ class Swervometer:
         XCoordinate = self.currentX + swerveModuleOffsetXCoordinate + XChange # current X-coordinate of COF plus swerve module offset plus movement
         YCoordinate = self.currentY + swerveModuleOffsetYCoordinate + YChange # current Y-coordinate of COF plus swerve module offset plus movement
         #print("XCoordinate: ", XCoordinate, " YCoordinate: ", YCoordinate)
-
+        #print(val, swerveModuleOffsetXCoordinate, swerveModuleOffsetYCoordinate)
         return XCoordinate, YCoordinate
 
     def calculateCOFPose(self, modules, currentGyroAngle):
@@ -151,16 +163,16 @@ class Swervometer:
             
             # Each of these calculations is different because positionChange, newAngle, and psi are different for each corner
             if (key == 'front_right'):
-                frontRightXCoordinate, frontRightYCoordinate = self.calculateModuleCoordinates(frontRightPsi, currentGyroAngle, hypotenuse, positionChange, wheelAngle)
+                frontRightXCoordinate, frontRightYCoordinate = self.calculateModuleCoordinates(frontRightPsi, currentGyroAngle, hypotenuse, positionChange, wheelAngle, 'fr')
                 #print("fr: pc: ", positionChange, " psi: ", frontRightPsi, " bot angle: ", currentGyroAngle, " wheel angle: ", wheelAngle, "frx: ", frontRightXCoordinate, "fry: ", frontRightYCoordinate)
             elif (key == 'rear_right'):
-                rearRightXCoordinate, rearRightYCoordinate = self.calculateModuleCoordinates(rearRightPsi, currentGyroAngle, hypotenuse, positionChange, wheelAngle)
+                rearRightXCoordinate, rearRightYCoordinate = self.calculateModuleCoordinates(rearRightPsi, currentGyroAngle, hypotenuse, positionChange, wheelAngle, 'rr')
                 #print("rr: pc: ", positionChange, " psi: ", rearRightPsi, " bot angle: ", currentGyroAngle, " wheel angle: ", wheelAngle, "rrx: ", rearRightXCoordinate, "rry: ", rearRightYCoordinate)
             elif (key == 'rear_left'):
-                rearLeftXCoordinate, rearLeftYCoordinate = self.calculateModuleCoordinates(rearLeftPsi, currentGyroAngle, hypotenuse, positionChange, wheelAngle)
+                rearLeftXCoordinate, rearLeftYCoordinate = self.calculateModuleCoordinates(rearLeftPsi, currentGyroAngle, hypotenuse, positionChange, wheelAngle, 'rl')
                 #print("rl: pc: ", positionChange, " psi: ", rearLeftPsi, " bot angle: ", currentGyroAngle, " wheel angle: ", wheelAngle, "rlx: ", rearLeftXCoordinate, "rly: ", rearLeftYCoordinate)
             else: # (key == 'front_left'):
-                frontLeftXCoordinate, frontLeftYCoordinate = self.calculateModuleCoordinates(frontLeftPsi, currentGyroAngle, hypotenuse, positionChange, wheelAngle)
+                frontLeftXCoordinate, frontLeftYCoordinate = self.calculateModuleCoordinates(frontLeftPsi, currentGyroAngle, hypotenuse, positionChange, wheelAngle, 'fl')
                 #print("fl: pc: ", positionChange, " psi: ", frontLeftPsi, " bot angle: ", currentGyroAngle, " wheel angle: ", wheelAngle, "flx: ", frontLeftXCoordinate, "fly: ", frontLeftYCoordinate)
             
         # Find average COF XY-coordinates of bot
@@ -182,4 +194,32 @@ class Swervometer:
         self.currentBearing = currentGyroAngle
         
         return self.currentX, self.currentY, self.currentBearing
+    """
    
+    def initPoseEstimator(self, modules, vision):
+        frontLeftModule = modules['front_left'].getModulePosition()
+        frontRightModule = modules['front_right'].getModulePosition()
+        rearLeftModule = modules['rear_left'].getModulePosition()
+        rearRightModule = modules['rear_right'].getModulePosition()
+        #correct order kinematics
+        kinematics = SwerveDrive4Kinematics(Translation2d(self.swerveModuleOffsetX * 0.0254, self.swerveModuleOffsetY * 0.0254),
+                                             Translation2d(self.swerveModuleOffsetX * 0.0254, -self.swerveModuleOffsetY * 0.0254),
+                                             Translation2d(-self.swerveModuleOffsetX * 0.0254, self.swerveModuleOffsetY * 0.0254),
+                                             Translation2d(-self.swerveModuleOffsetX * 0.0254, -self.swerveModuleOffsetY * 0.0254))
+        gyroAngle = Rotation2d(self.teamGyroAdjustment * math.pi / 180)
+        swerveModules = (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule)
+        self.poseEstimator =  SwerveDrive4PoseEstimator(kinematics, gyroAngle, swerveModules, Pose2d(self.currentX * 0.0254, self.currentY * 0.0254, self.teamGyroAdjustment * math.pi / 180))
+        self.vision = vision
+
+    def updatePoseEstimator(self, gyroAngle, modules):
+        frontLeftModule = modules['front_left'].getModulePosition()
+        frontRightModule = modules['front_right'].getModulePosition()
+        rearLeftModule = modules['rear_left'].getModulePosition()
+        rearRightModule = modules['rear_right'].getModulePosition()
+        self.currentPose = self.poseEstimator.updateWithTime(self.getTimer(), Rotation2d(gyroAngle * math.pi / 180), (frontLeftModule, frontRightModule, rearLeftModule, rearRightModule))
+        self.currentBearing = gyroAngle
+        if(self.vision.hasTargets()):
+            self.swervometer.poseEstimator.addVisionMeasurement(Pose2d(self.vision.getPose()[0] * 0.0254, self.vision.getPose()[1] * 0.0254, gyroAngle * math.pi / 180), self.swervometer.getTimer() - self.vision.getTotalLatency() / 1000)
+
+    def getEstimatedPosition(self):
+        return self.currentPose.X, self.currentPose.Y, self.currentBearing

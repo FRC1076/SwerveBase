@@ -1,4 +1,5 @@
 import wpilib
+from dashboard import Dashboard
 class Autonomous:
 
     def __init__(self, config, team_is_red, field_start_position, drivetrain):
@@ -19,12 +20,18 @@ class Autonomous:
         self.autonHasStarted = False
         self.drivetrain = drivetrain
         self.lastTime = -1
+        self.dashboard = Dashboard.getDashboard()
 
     def executeAuton(self):
+        print(self.dashboard.getBoolean("ROBOT", "Team is Red", False))
         if not self.autonHasStarted:
             self.autonTimer.start()
 
         if self.taskListCounter >= len(self.taskList):
+            self.drivetrain.set_fwd(0)
+            self.drivetrain.set_strafe(0)
+            self.drivetrain.set_rcw(0)
+            self.drivetrain.execute('center')
             print("tasks arae done")
             return False
         
@@ -54,6 +61,10 @@ class Autonomous:
             if(self.autonTimer.get() - self.lastTime > self.autonTask[1]):
                 self.lastTime = -1
                 self.taskListCounter += 1
+        
+        elif self.autonTask[0] == 'UPDATE_POSE':
+            #self.drivetrain.visionUpdatePose()
+            self.taskListCounter += 1
 
         return False
     
