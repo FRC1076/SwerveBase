@@ -223,4 +223,4 @@ class Swervometer:
         self.currentPose = self.poseEstimator.getEstimatedPosition()
         self.currentX = self.currentPose.X() * 39.37
         self.currentY = self.currentPose.Y() * 39.37
-        print("CURRENT POSE", self.currentX, self.currentY)
+        #print("CURRENT POSE", self.currentX, self.currentY)

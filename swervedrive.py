@@ -199,7 +199,7 @@ class SwerveDrive:
         self.field = wpilib.Field2d()
         self.field.setRobotPose(wpimath.geometry.Pose2d((x + 248.625) * 0.0254, (y + 115.25) * 0.0254, wpimath.geometry.Rotation2d(self.getGyroAngle() * math.pi / 180)))
 
-        self.holonomicController = HolonomicDriveController(self.target_x_pid_controller, self.target_y_pid_controller, ProfiledPIDController(self.bearing_kP, self.bearing_kI, self.bearing_kD, TrapezoidProfile.Constraints(2 * math.pi, math.pi)))
+        #self.holonomicController = HolonomicDriveController(self.target_x_pid_controller, self.target_y_pid_controller, ProfiledPIDController(self.bearing_kP, self.bearing_kI, self.bearing_kD, TrapezoidProfile.Constraints(2 * math.pi, math.pi)))
 
     def setInAuton(self, state):
         self.inAuton = state
@@ -704,10 +704,10 @@ class SwerveDrive:
     
     def trajectoryMove(self, trajectoryState): #pose is of class Trajectory.state
         currentX, currentY, currentBearing = self.swervometer.getEstimatedPosition()
-        self.chassisSpeeds = self.holonomicController.calculate(Pose2d(currentX, currentY, Rotation2d.fromDegrees(currentBearing)), trajectoryState, Rotation2d.fromDegrees(currentBearing))
-        self.set_fwd(self.chassisSpeeds.vx)
-        self.set_strafe(self.chassisSpeeds.vy)
-        self.set_rcw(self.chassisSpeeds.omega)
+        #self.chassisSpeeds = self.holonomicController.calculate(Pose2d(currentX, currentY, Rotation2d.fromDegrees(currentBearing)), trajectoryState, Rotation2d.fromDegrees(currentBearing))
+        #self.set_fwd(self.chassisSpeeds.vx)
+        #self.set_strafe(self.chassisSpeeds.vy)
+        #self.set_rcw(self.chassisSpeeds.omega)
 
 
     def _calculate_vectors(self):
@@ -1108,9 +1108,9 @@ class SwerveDrive:
             desiredAngle = 180 - math.atan2((currentY - y), (currentX - x)) * 180/math.pi
             #print(self.getGyroAngle() - math.atan((y - currentY)/(x - currentX)) * 180/math.pi)
             #print(math.atan(-(y - currentY)/(x - currentX)) * 180/math.pi)
-            print(y, currentY, x, currentX)
-            print(desiredAngle)
-            print(self.getGyroAngle())
+            #print(y, currentY, x, currentX)
+            #print(desiredAngle)
+            #print(self.getGyroAngle())
             angleMove = self.bearing_pid_controller.calculate(self.getGyroAngle(), desiredAngle)
             #print(math.atan2(-(y - currentY), (x - currentX)) * 180/math.pi)
             #print("Gyro", self.getGyroAngle())
