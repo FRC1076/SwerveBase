@@ -2,9 +2,12 @@ import wpilib
 from dashboard import Dashboard
 from wpimath.trajectory import Trajectory, TrajectoryUtil
 from pathplannerlib.path import PathPlannerPath
+from wpimath.kinematics import ChassisSpeeds
+from wpimath.geometry import Rotation2d
+import math
 class Autonomous:
 
-    def __init__(self, config, team_is_red, field_start_position, drivetrain):
+    def __init__(self, config, team_is_red, field_start_position, drivetrain, swervometer):
         taskListName = ""
         if team_is_red:
             taskListName += "TASK_RED"
@@ -23,6 +26,7 @@ class Autonomous:
         self.drivetrain = drivetrain
         self.lastTime = -1
         self.dashboard = Dashboard.getDashboard()
+        self.swervometer = swervometer
 
     def executeAuton(self):
         print(self.dashboard.getBoolean("ROBOT", "Team is Red", False))
@@ -72,8 +76,15 @@ class Autonomous:
             if self.lastTime == -1:
                 self.lastTime = self.autonTimer.get()
                 self.path = PathPlannerPath.fromPathFile(self.autonTask[1])
-                self.pathTrajectory = self.path.getTrajectory()
-            print(self.pathTrajectory.sample(self.autonTimer.get() - self.lastTime))
+                self.pathTrajectory = self.path.getTrajectory(ChassisSpeeds(), Rotation2d())
+            self.pathState = self.pathTrajectory.sample(self.autonTimer.get() - self.lastTime)
+            self.targetPose = self.pathState.getTargetHolonomicPose()
+            print((self.targetPose.X() - 8.29) * 39.37, (self.targetPose.Y() - 4.11) * 39.37)
+            print(self.swervometer.getCOF())
+            self.xVelocity = self.pathState.velocityMps / 3 * math.cos(self.pathState.heading.radians())
+            self.yVelocity = self.pathState.velocityMps / 3 * math.sin(self.pathState.heading.radians())
+            self.drivetrain.move(self.xVelocity, -self.yVelocity, 0, self.swervometer.getTeamGyroAdjustment())
+            self.drivetrain.execute('center')
 
         return False
     

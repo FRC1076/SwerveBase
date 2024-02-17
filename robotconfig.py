@@ -26,7 +26,7 @@ controllerConfig = {
 }
 
 swervometerConfig = { # All positions measured in inches
-    'TEAM_IS_RED': True, # Is the robot part of the Red Team?
+    'TEAM_IS_RED': False, # Is the robot part of the Red Team?
     'FIELD_START_POSITION': 'A', # Which of three starting positions is selected?
     'HAS_BUMPERS_ATTACHED': True, # Does the robot currently have bumpers attached?
     'USE_COM_ADJUSTMENT': True, # Should robot compensate for CoM lever arms?
@@ -160,11 +160,11 @@ autonConfig = {
     'SCORE_EXISTING': True,
     'BALANCE_BOT': True,
     'DO_COMMUNITY': False, # Only applies for position B
-    'AUTON_OPEN_LOOP_RAMP_RATE': 1, # Improves the quality of swervometery by avoiding slippage.
+    'AUTON_OPEN_LOOP_RAMP_RATE': 0, # Improves the quality of swervometery by avoiding slippage.
     'AUTON_CLOSED_LOOP_RAMP_RATE': 0,
     #'TASK_RED_A': [['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 230.5, 57, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['UPDATE_POSE'], ['MOVE', 262.25, 114, 0], ['WAIT', 2], ['MOVE', 294, 114, 0], ['WAIT', 2], ['MOVE', 294, 57, 0], ['WAIT', 2], ['MOVE', 262.25, 0, 0], ['MOVE', 230.5, 0, 0], ['WAIT', 2], ['MOVE', 294, 57, 0]], #,['MOVE', 91.9375, -40.15, 180]]
-    'TASK_RED_A': [['PATH', '']],
-    'TASK_BLUE_A': []
+    'TASK_RED_A': [['PATH', 'Example Path']],
+    'TASK_BLUE_A': [['PATH', 'New Path']]
     # 'TASK_BLU_A_TF': [['CLAW_INTAKE_AND_STOP'],
     #                     ['POSITION_GRABBER', 2],
     #                     ['ELEVATOR_DOWN'],
