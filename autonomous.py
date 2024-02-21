@@ -4,6 +4,8 @@ from wpimath.trajectory import Trajectory, TrajectoryUtil
 from pathplannerlib.path import PathPlannerPath
 from wpimath.kinematics import ChassisSpeeds
 from wpimath.geometry import Rotation2d
+from pathplannerlib.config import PIDConstants
+from pathplannerlib.controller import PPHolonomicDriveController
 import math
 class Autonomous:
 
@@ -27,6 +29,8 @@ class Autonomous:
         self.lastTime = -1
         self.dashboard = Dashboard.getDashboard()
         self.swervometer = swervometer
+
+        self.holonomicController = PPHolonomicDriveController(PIDConstants(0, 0, 0), PIDConstants(0, 0, 0), 3, 0.5388, 0.2)
 
     def executeAuton(self):
         print(self.dashboard.getBoolean("ROBOT", "Team is Red", False))
@@ -85,6 +89,10 @@ class Autonomous:
             self.yVelocity = self.pathState.velocityMps / 3 * math.sin(self.pathState.heading.radians())
             self.drivetrain.move(self.xVelocity, -self.yVelocity, 0, self.swervometer.getTeamGyroAdjustment())
             self.drivetrain.execute('center')
+
+            #calculate chassis speeds with feedback
+            #GET COF IS NOT IN METERS AND WITH BLUE RIGHT HAND SIDE AS ORIGIN
+            #self.holonomicController.calculateRobotRelativeSpeeds(self.swervometer.getCOF(), self.pathState)
 
         return False
     
