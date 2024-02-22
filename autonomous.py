@@ -82,17 +82,22 @@ class Autonomous:
                 self.path = PathPlannerPath.fromPathFile(self.autonTask[1])
                 self.pathTrajectory = self.path.getTrajectory(ChassisSpeeds(), Rotation2d())
             self.pathState = self.pathTrajectory.sample(self.autonTimer.get() - self.lastTime)
+            """
             self.targetPose = self.pathState.getTargetHolonomicPose()
             print((self.targetPose.X() - 8.29) * 39.37, (self.targetPose.Y() - 4.11) * 39.37)
             print(self.swervometer.getCOF())
             self.xVelocity = self.pathState.velocityMps / 3 * math.cos(self.pathState.heading.radians())
             self.yVelocity = self.pathState.velocityMps / 3 * math.sin(self.pathState.heading.radians())
             self.drivetrain.move(self.xVelocity, -self.yVelocity, 0, self.swervometer.getTeamGyroAdjustment())
-            self.drivetrain.execute('center')
+            self.drivetrain.execute('center')"""
 
             #calculate chassis speeds with feedback
             #GET COF IS NOT IN METERS AND WITH BLUE RIGHT HAND SIDE AS ORIGIN
-            #self.holonomicController.calculateRobotRelativeSpeeds(self.swervometer.getCOF(), self.pathState)
+            #while the units calculated are in meters, ours are in voltage (hopefully feedback control can account for this)
+            self.chassisSpeeds = self.holonomicController.calculateRobotRelativeSpeeds(self.swervometer.getPathPlannerPose(), self.pathState)
+            self.drivetrain.set_fwd(self.chassisSpeeds.vx)
+            self.drivetrain.set_strafe(self.chassisSpeeds.vy)
+            self.drivetrain.execute('center')
 
         return False
     
