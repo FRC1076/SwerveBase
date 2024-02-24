@@ -11,6 +11,7 @@ class Autonomous:
 
     def __init__(self, config, team_is_red, field_start_position, drivetrain, swervometer):
         taskListName = ""
+        self.team_is_red = team_is_red
         if team_is_red:
             taskListName += "TASK_RED"
         else:
@@ -30,7 +31,7 @@ class Autonomous:
         self.dashboard = Dashboard.getDashboard()
         self.swervometer = swervometer
 
-        self.holonomicController = PPHolonomicDriveController(PIDConstants(0, 0, 0), PIDConstants(0, 0, 0), 3, 0.5388, 0.2)
+        self.holonomicController = PPHolonomicDriveController(PIDConstants(0.6, 0, 0), PIDConstants(0, 0, 0), 3, 0.5388, 0.2)
 
     def executeAuton(self):
         print(self.dashboard.getBoolean("ROBOT", "Team is Red", False))
@@ -95,9 +96,16 @@ class Autonomous:
             #GET COF IS NOT IN METERS AND WITH BLUE RIGHT HAND SIDE AS ORIGIN
             #while the units calculated are in meters, ours are in voltage (hopefully feedback control can account for this)
             self.chassisSpeeds = self.holonomicController.calculateRobotRelativeSpeeds(self.swervometer.getPathPlannerPose(), self.pathState)
-            self.drivetrain.set_fwd(self.chassisSpeeds.vx)
-            self.drivetrain.set_strafe(self.chassisSpeeds.vy)
+            self.drivetrain.set_fwd(-self.chassisSpeeds.vy/3)
+            self.drivetrain.set_strafe(self.chassisSpeeds.vx/3)
+            if self.drivetrain.shouldSteerStraight():
+                if(self.team_is_red):
+                    self.drivetrain.set_rcw(self.drivetrain.steerStraight(0, 0))
+                else:
+                    self.drivetrain.set_rcw(self.drivetrain.steerStraight(0, 180))
             self.drivetrain.execute('center')
+            self.drivetrain.set_fwd(0)
+            self.drivetrain.set_strafe(0)
 
         return False
     
